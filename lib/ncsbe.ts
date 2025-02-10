@@ -47,45 +47,113 @@ class NCSBE {
     }
 
     async refresh(): Promise<void> {
-        // TODO: add in hashing support from og repo
         this.dataSet = await this.collect();
+    }
+
+    private getContestData(contest: string): ContestData | null {
+        return this.dataSet
+            ? this.dataSet.find((row) => row.contestName === contest) || null
+            : null;
     }
 
     listContests(): string[] {
         return this.dataSet
-            ? this.dataSet
-                  .map((row) => row.contestName)
-                  .filter((value, index, self) => self.indexOf(value) === index)
+            ? [...new Set(this.dataSet.map((row) => row.contestName))]
             : [];
     }
 
     listCounties(contest: string): string[] {
-        return this.dataSet
-            ? this.dataSet
-                  .filter((row) => row.contestName === contest)
-                  .flatMap((row) => row.counties.map((county) => county.county))
-                  .filter((value, index, self) => self.indexOf(value) === index)
+        const contestData = this.getContestData(contest);
+        return contestData
+            ? [...new Set(contestData.counties.map((c) => c.county))]
             : [];
     }
 
     listPrecincts(contest: string, county: string): string[] {
-        return this.dataSet
-            ? this.dataSet
-                  .filter((row) => row.contestName === contest)
-                  .flatMap((row) =>
-                      row.counties
-                          .filter((c) => c.county === county)
-                          .flatMap((c) => c.precincts.map((p) => p.precinct)),
-                  )
-                  .filter((value, index, self) => self.indexOf(value) === index)
-            : [];
+        const contestData = this.getContestData(contest);
+        if (!contestData) return [];
+        const countyData = contestData.counties.find(
+            (c) => c.county === county,
+        );
+        return countyData ? countyData.precincts.map((p) => p.precinct) : [];
     }
 
     listCandidates(contest: string): string[] {
+        const contestData = this.getContestData(contest);
+        return contestData
+            ? [...new Set(contestData.candidates.map((c) => c.candidate))]
+            : [];
+    }
+
+    getContest(contest: string): ContestData | null {
+        return this.getContestData(contest);
+    }
+
+    getCandidateInfo(
+        contest: string,
+        candidateName: string,
+    ): CandidateData | null {
+        const contestData = this.getContestData(contest);
+        return contestData
+            ? contestData.candidates.find(
+                  (c) => c.candidate === candidateName,
+              ) || null
+            : null;
+    }
+
+    getCountyResults(contest: string, county: string): CountyData | null {
+        const contestData = this.getContestData(contest);
+        return contestData
+            ? contestData.counties.find((c) => c.county === county) || null
+            : null;
+    }
+
+    getAllCandidateResults(candidateName: string): CandidateData[] {
+        if (!this.dataSet) return [];
         return this.dataSet
-            ? this.dataSet
-                  .filter((row) => row.contestName === contest)
-                  .flatMap((row) => row.candidates.map((candidate) => candidate.candidate))
+            .flatMap((contest) => contest.candidates)
+            .filter((c) => c.candidate === candidateName);
+    }
+
+    getCandidateVoteTotal(contest: string, candidateName: string): number {
+        const contestData = this.getContestData(contest);
+        if (!contestData) return 0;
+        return contestData.counties
+            .flatMap((c) => c.precincts)
+            .flatMap((p) => p.candidates)
+            .filter((c) => c.candidate === candidateName)
+            .reduce((sum, c) => sum + c.votes, 0);
+    }
+
+    getContestVoteTotals(contest: string): Record<string, number> {
+        const contestData = this.getContestData(contest);
+        if (!contestData) return {};
+        return contestData.candidates.reduce(
+            (acc, candidate) => {
+                acc[candidate.candidate] = this.getCandidateVoteTotal(
+                    contest,
+                    candidate.candidate,
+                );
+                return acc;
+            },
+            {} as Record<string, number>,
+        );
+    }
+
+    getCandidates(contest: string): CandidateData[] {
+        const contestData = this.getContest(contest);
+        return contestData ? contestData.candidates : [];
+    }
+
+    getCounties(contest: string): CountyData[] {
+        const contestData = this.getContest(contest);
+        return contestData ? contestData.counties : [];
+    }
+
+    getPrecincts(contest: string): PrecinctData[] {
+        const contestData = this.getContest(contest);
+        return contestData
+            ? contestData.counties.flatMap((c) => c.precincts)
             : [];
     }
 }

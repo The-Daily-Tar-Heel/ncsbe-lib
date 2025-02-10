@@ -2,11 +2,14 @@
   "name": "ncsbe-lib",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup --config",
+    "start": "node dist/index.js",
+    "dev": "rollup --config --watch"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +17,22 @@
   "description": "",
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "axios": "^1.7.9",
     "csv-parser": "^3.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.8",
+    "@babel/preset-env": "^7.26.8",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@types/adm-zip": "^0.5.7",
+    "@types/axios": "^0.14.4",
+    "@types/node": "^22.13.1",
+    "axios": "^1.7.9",
+    "rollup": "^4.34.6",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3"
   }
 }

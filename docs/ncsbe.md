@@ -274,6 +274,58 @@ getContestVoteTotals(contest: string): Record<string, number>;
 ```
 ---
 
+### `getCandidateVotePercentage(contest, candidateName)`
+**Description**  
+Retrieves a candidate's percentage of total votes for a given contest.
+
+**Signature**  
+```ts
+getCandidateVotePercentage(contest: string, candidateName: string): number;
+```
+
+**Parameters**  
+- `contest: string` — The name of the contest.
+- `candidateName: string` - The name of the candidate.
+
+**Returns**  
+- `number`:
+  - A decimal value representing the percentage of the vote a candidate holds.
+
+**Example**:
+```ts
+    const votePercentage = ncsbe.getCandidateVotePercentage('US Senate', 'John Doe');
+    console.log(votePercentage);
+    // Expected output: 20.3
+    
+```
+---
+
+### `getContestWinner(contest)`
+**Description**  
+Retrieves the data of the candidate who currently has the most votes in a given contest. This method can be used to see who is leading a contest, or who has won the contests after the final updates to the dataset.
+> Note: This method does not account for the case of a tie.
+
+**Signature**  
+```ts
+getContestWinner(contest: string): CandidateData;
+```
+
+**Parameters**  
+- `contest: string` — The name of the contest.
+
+**Returns**  
+- `CandidateData`:
+  - A `CandidateData` object holding the information for a candidate who is currently winning the given contest
+
+**Example**:
+```ts
+    const currentLeader = ncsbe.getContestWinner('US Senate');
+    console.log(currentLeader);
+    // Expected output: { candidate: 'John Doe', party: 'DEM', votes: 13000 }
+    
+```
+---
+
 ### `getCandidates(contest)`
 **Description**  
 Retrieves **all candidate data objects** for a specific contest.
@@ -345,6 +397,29 @@ getPrecincts(contest: string): PrecinctData[];
     console.log(precinctsData.length);
     // For each precinct, you can see which candidates got how many votes
 ```
+---
+### `getContestsByCandidate(candidateName)`
+**Description**  
+Retrieves all contests that a given candidate is a part of.
+
+**Signature**  
+```ts
+getContestsByCandidate(candidateName: string): ContestData[];
+```
+
+**Parameters**  
+- `candidateName: string` - The name of the candidate.
+
+**Returns**  
+- `ContestData[]`:
+  - An array of `ContestData` objects that a candidate was found in.
+
+**Example**:
+```ts
+    const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
+    console.log(contestsForJohn.length);
+```
+
 
 ## Notes
 1. **Data Freshness**: The NCSBE website updates election results periodically on election day and afterwards. Use `refresh()` to keep data synchronized.

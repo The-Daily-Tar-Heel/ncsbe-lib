@@ -43,6 +43,8 @@ export interface ContestData {
     
     /** List of counties where voting took place for this contest. */
     counties: CountyData[];
+
+    candidates: CandidateData[];
 }
 
 /**

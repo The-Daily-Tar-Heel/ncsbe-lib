@@ -219,6 +219,38 @@ class NCSBE {
     }
 
     /**
+     * Retrieve a candidate's percentage of total votes in a contest.
+     * @param {string} contest - The contest name
+     * @param {string} candidateName - The candidate's name
+     * @returns {number} a percentage (e.g. 25.4, 1.0, 90)
+     */
+    getCandidateVotePercentage(contest: string, candidateName: string): number {
+        const voteTotals = this.getContestVoteTotals(contest);
+        if (!(candidateName in voteTotals)) return 0;
+
+        const totalVotes = Object.values(voteTotals).reduce((sum, votes) => sum + votes, 0);
+        return totalVotes > 0 ? (voteTotals[candidateName] / totalVotes) * 100 : 0;
+    }
+
+    /**
+     * Retrieves the data of the candidate who currently has the
+     * most votes in a given contest. Does not handle the case of a tie.
+     * @param {string} contest - The name of the contest
+     * @returns {CandidateData | null} The name of the winning candidate
+     */
+    getContestWinner(contest: string): CandidateData | null {
+        const contestData = this.getContestData(contest);
+        if (!contestData || contestData.candidates.length === 0) return null;
+    
+        const voteTotals = this.getContestVoteTotals(contest);
+        if (Object.keys(voteTotals).length === 0) return null;
+        
+        const winnerName = Object.entries(voteTotals).reduce((a, b) => b[1] > a[1] ? b : a)[0];
+        
+        return contestData.candidates.find(c => c.candidate == winnerName) || null;
+    }
+
+    /**
      * Retrieves all candidates in a given contest.
      * @param {string} contest - The contest name.
      * @returns {CandidateData[]} An array of candidate data objects.
@@ -248,6 +280,18 @@ class NCSBE {
         return contestData
             ? contestData.counties.flatMap((c) => c.precincts)
             : [];
+    }
+
+    /**
+     * Retrieves all contests that a given candidate is a part of. 
+     * @param {string} candidateName - The candidate's name
+     * @returns {ContestData[]} An array of contest data objects that a candidate is a part of
+     */
+    getContestsByCandidate(candidateName: string): ContestData[] {
+        if (!this.dataSet) return [];
+        return this.dataSet.filter(contest => 
+            contest.candidates.some(c => c.candidate === candidateName)
+        );
     }
 }
 

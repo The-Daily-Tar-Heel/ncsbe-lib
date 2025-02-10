@@ -39,6 +39,7 @@ interface CountyData {
 
 interface ContestData {
     contestName: string;
+    candidates: CandidateData[];
     counties: CountyData[];
 }
 
@@ -134,7 +135,10 @@ class Collector {
     private format(parsedData: ParsedRow[]): ContestData[] {
         const data: Record<
             string,
-            Record<string, Record<string, CandidateData[]>>
+            {
+                counties: Record<string, Record<string, CandidateData[]>>;
+                candidates: Record<string, CandidateData>;
+            }
         > = {};
 
         parsedData.forEach((row) => {
@@ -148,46 +152,59 @@ class Collector {
             } = row;
 
             if (!data[contestName]) {
-                data[contestName] = {};
+                data[contestName] = {
+                    counties: {},
+                    candidates: {},
+                };
             }
 
-            if (!data[contestName][county]) {
-                data[contestName][county] = {};
+            if (!data[contestName].counties[county]) {
+                data[contestName].counties[county] = {};
             }
 
-            if (!data[contestName][county][precinct]) {
-                data[contestName][county][precinct] = [];
+            if (!data[contestName].counties[county][precinct]) {
+                data[contestName].counties[county][precinct] = [];
             }
 
-            data[contestName][county][precinct].push({
+            data[contestName].counties[county][precinct].push({
                 candidate: choice,
                 party: choiceParty,
                 votes: totalVotes,
             });
+
+            if (!data[contestName].candidates[choice]) {
+                data[contestName].candidates[choice] = {
+                    candidate: choice,
+                    party: choiceParty,
+                    votes: 0,
+                };
+            }
+            data[contestName].candidates[choice].votes += totalVotes;
         });
 
         return Object.keys(data).map((contestName) => {
-            const counties: CountyData[] = Object.keys(data[contestName]).map(
-                (countyName) => {
-                    const precincts: PrecinctData[] = Object.keys(
-                        data[contestName][countyName],
-                    ).map((precinctName) => {
-                        return {
-                            precinct: precinctName,
-                            candidates:
-                                data[contestName][countyName][precinctName],
-                        };
-                    });
+            const counties: CountyData[] = Object.keys(
+                data[contestName].counties,
+            ).map((countyName) => {
+                const precincts: PrecinctData[] = Object.keys(
+                    data[contestName].counties[countyName],
+                ).map((precinctName) => ({
+                    precinct: precinctName,
+                    candidates:
+                        data[contestName].counties[countyName][precinctName],
+                }));
 
-                    return {
-                        county: countyName,
-                        precincts,
-                    };
-                },
-            );
+                return {
+                    county: countyName,
+                    precincts,
+                };
+            });
+
+            const candidates = Object.values(data[contestName].candidates);
 
             return {
                 contestName,
+                candidates,
                 counties,
             };
         });

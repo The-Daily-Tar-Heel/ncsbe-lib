@@ -17,6 +17,7 @@ interface CountyData {
 }
 
 interface ContestData {
+    candidates: CandidateData[];
     contestName: string;
     counties: CountyData[];
 }
@@ -42,6 +43,11 @@ class NCSBE {
     }
 
     async initialize(): Promise<void> {
+        this.dataSet = await this.collect();
+    }
+
+    async refresh(): Promise<void> {
+        // TODO: add in hashing support from og repo
         this.dataSet = await this.collect();
     }
 
@@ -75,9 +81,12 @@ class NCSBE {
             : [];
     }
 
-    listCandidates(contest: string): void {
-        // TODO: in current data model candidates are hidden under contest > county > precinct
-        // need to change data model in collector.ts to make this easier
+    listCandidates(contest: string): string[] {
+        return this.dataSet
+            ? this.dataSet
+                  .filter((row) => row.contestName === contest)
+                  .flatMap((row) => row.candidates.map((candidate) => candidate.candidate))
+            : [];
     }
 }
 

@@ -10,6 +10,7 @@
     "build": "rollup --config",
     "start": "node dist/index.js",
     "dev": "rollup --config --watch",
+    "test": "rollup --config & node dist/bundle.esm.js",
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"./**/*.{ts,js,json,md}\""
   },
@@ -19,7 +20,8 @@
   "description": "",
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "csv-parser": "^3.2.0"
+    "csv-parser": "^3.2.0",
+    "pino": "^9.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.8",

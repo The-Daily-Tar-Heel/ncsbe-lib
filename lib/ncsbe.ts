@@ -1,25 +1,5 @@
 import { Collector } from './collector';
-
-interface CandidateData {
-    candidate: string;
-    party: string;
-    votes: number;
-}
-
-interface PrecinctData {
-    precinct: string;
-    candidates: CandidateData[];
-}
-
-interface CountyData {
-    county: string;
-    precincts: PrecinctData[];
-}
-
-interface ContestData {
-    contestName: string;
-    counties: CountyData[];
-}
+import { ContestData } from './types';
 
 class NCSBE {
     private electionDate: string;

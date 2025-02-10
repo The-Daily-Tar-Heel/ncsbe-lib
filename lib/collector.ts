@@ -2,45 +2,7 @@ import axios from 'axios';
 import AdmZip from 'adm-zip';
 import csv from 'csv-parser';
 import { Transform, Readable } from 'stream';
-
-interface ParsedRow {
-    county: string;
-    electionDate: string;
-    precinct: string;
-    contestGroupId: number;
-    contestType: string;
-    contestName: string;
-    choice: string;
-    choiceParty: string;
-    voteFor: number;
-    electionDay: number;
-    earlyVoting: number;
-    absenteeByMail: number;
-    provisional: number;
-    totalVotes: number;
-    realPrecinct: boolean;
-}
-
-interface CandidateData {
-    candidate: string;
-    party: string;
-    votes: number;
-}
-
-interface PrecinctData {
-    precinct: string;
-    candidates: CandidateData[];
-}
-
-interface CountyData {
-    county: string;
-    precincts: PrecinctData[];
-}
-
-interface ContestData {
-    contestName: string;
-    counties: CountyData[];
-}
+import { CandidateData, PrecinctData, CountyData, ContestData, ParsedRow } from './types';
 
 /**
  * The `Collector` class is responsible for fetching, parsing, and formatting election data

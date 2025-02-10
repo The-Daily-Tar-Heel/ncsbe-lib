@@ -12,7 +12,9 @@
     "dev": "rollup --config --watch",
     "test": "rollup --config & node dist/bundle.esm.js",
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
-    "format:check": "prettier --check \"./**/*.{ts,js,json,md}\""
+    "format:check": "prettier --check \"./**/*.{ts,js,json,md}\"",
+    "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +36,8 @@
     "@types/axios": "^0.14.4",
     "@types/node": "^22.13.1",
     "axios": "^1.7.9",
+    "eslint": "^9.20.0",
+    "globals": "^15.14.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "lint-staged": "^15.4.3",
@@ -41,7 +45,8 @@
     "rollup": "^4.34.6",
     "rollup-plugin-typescript2": "^0.36.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
   },
   "husky": {
     "hooks": {
@@ -49,6 +54,9 @@
     }
   },
   "lint-staged": {
-    "./**/*.{ts,js,json,md}": "prettier --write"
+    "./**/*.{ts,js,json,md}": [
+      "eslint . --fix",
+      "prettier --write ."
+    ]
   }
 }

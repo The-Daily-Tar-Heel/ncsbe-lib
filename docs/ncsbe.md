@@ -5,428 +5,532 @@
 ## Usage
 
 ### Creating an NCSBE instance
+
 ```ts
 import { NCSBE } from 'ncsbe';
 
 const ncsbe = new NCSBE('2024-11-05');
 ```
+
 - '2024-11-05': The date of the election in 'YYYY-MM-DD' format.
 
-
 ## Data Fetching and Updating
+
 ### `initialize()`
+
 ```ts
 await ncsbe.initialize();
 ```
+
 - Fetches the election dataset for the given date and stores it in memory.
 - Must be called before using other query functions.
 
 ### `refresh()`
+
 ```ts
 await ncsbe.refresh();
 ```
+
 - Fetches the latest dataset and **completely replaces** the in-memory data.
 - Recommended to run every 5 minutes for live election tracking.
 
 ## Query Functions
+
 Below is a reference of the main query functions provided by NCSBE. Each method assumes `initialize()` has already been called.
 
-
 ### `listContests()`
+
 **Description**  
 Retrieves an array of all available contest (race) names in the dataset.
 
-**Signature**  
+**Signature**
+
 ```ts
 listContests(): string[];
 ```
 
-**Returns**  
+**Returns**
+
 - `string[]`: An array of contest names.
 
 **Example**:
+
 ```ts
-    const contests = ncsbe.listContests();
-    console.log(contests);
-    // Example output: [ 'US Senate', 'US House District 1', 'Governor', ... ]
+const contests = ncsbe.listContests();
+console.log(contests);
+// Example output: [ 'US Senate', 'US House District 1', 'Governor', ... ]
 ```
+
 ---
 
 ### `listCounties(contest)`
+
 **Description**  
 Lists all counties in which votes were cast for a specified contest.
 
-**Signature** 
+**Signature**
+
 ```ts
 listCounties(contest: string): string[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest (e.g., "US Senate").
 
-**Returns**  
+**Returns**
+
 - `string[]`: Array of county names that have results for this contest.
 
 **Example**:
+
 ```ts
-    const counties = ncsbe.listCounties('US Senate');
-    console.log(counties);
-    // Example output: [ 'Wake', 'Mecklenburg', 'Durham', ... ]
+const counties = ncsbe.listCounties('US Senate');
+console.log(counties);
+// Example output: [ 'Wake', 'Mecklenburg', 'Durham', ... ]
 ```
+
 ---
 
 ### `listPrecincts(contest, county)`
+
 **Description**
 Lists all precincts in a given county for a specific contest.
 
 **Signature**
+
 ```ts
 listPrecincts(contest: string, county: string): string[];
 ```
 
 **Parameters**
+
 - `contest: string` — The name of the contest (e.g., "US Senate").
 - `county: string` — The name of the county (e.g., "Wake").
 
-**Returns**  
+**Returns**
+
 - `string[]`: An array of precinct names.
 
 **Example**:
+
 ```ts
-    const precincts = ncsbe.listPrecincts('US Senate', 'Wake');
-    console.log(precincts);
-    // Example output: [ 'Precinct 01-01', 'Precinct 01-02', ... ]
+const precincts = ncsbe.listPrecincts('US Senate', 'Wake');
+console.log(precincts);
+// Example output: [ 'Precinct 01-01', 'Precinct 01-02', ... ]
 ```
+
 ---
 
 ### `listCandidates(contest)`
+
 **Description**  
 Retrieves a list of all candidate names running in a specific contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 listCandidates(contest: string): string[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest (e.g., "US Senate").
 
-**Returns**  
+**Returns**
+
 - `string[]`: An array of candidate names.
 
 **Example**:
+
 ```ts
-    const candidates = ncsbe.listCandidates('US Senate');
-    console.log(candidates);
-    // Example output: [ 'Candidate A', 'Candidate B', 'Candidate C', ... ]
+const candidates = ncsbe.listCandidates('US Senate');
+console.log(candidates);
+// Example output: [ 'Candidate A', 'Candidate B', 'Candidate C', ... ]
 ```
+
 ---
 
 ### `getContest(contest)`
+
 **Description**
 Retrieves the entire `ContestData` object for a given contest, which includes candidate data, counties, and precinct information.
 
 **Signature**
+
 ```ts
 getContest(contest: string): ContestData | null;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `ContestData | null`:
-  - `ContestData` if the contest exists, otherwise `null`.
+    - `ContestData` if the contest exists, otherwise `null`.
 
 **Example**:
+
 ```ts
-    const contestData = ncsbe.getContest('US Senate');
-    if (contestData) {
-      console.log(contestData.counties.length);
-      console.log(conteestData.candidates.length);
-    }
+const contestData = ncsbe.getContest('US Senate');
+if (contestData) {
+    console.log(contestData.counties.length);
+    console.log(conteestData.candidates.length);
+}
 ```
+
 ---
 
 ### `getCandidateInfo(contest, candidateName)`
+
 **Description**  
 Retrieves detailed information about a single candidate in a given contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getCandidateInfo(contest: string, candidateName: string): CandidateData | null;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The contest name.
 - `candidateName: string` — The candidate’s name.
 
-**Returns**  
+**Returns**
+
 - `CandidateData | null`:
-  - `CandidateData` if found, otherwise `null`.
+    - `CandidateData` if found, otherwise `null`.
 
 **Example**:
+
 ```ts
-    const candidateInfo = ncsbe.getCandidateInfo('US Senate', 'Candidate A');
-    if (candidateInfo) {
-      console.log(candidateInfo.party);
-      console.log(candidateInfo.votes);
-    }
+const candidateInfo = ncsbe.getCandidateInfo('US Senate', 'Candidate A');
+if (candidateInfo) {
+    console.log(candidateInfo.party);
+    console.log(candidateInfo.votes);
+}
 ```
+
 ---
 
 ### `getCountyResults(contest, county)`
+
 **Description**  
 Retrieves voting results for **all precincts** within a specific county for the given contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getCountyResults(contest: string, county: string): CountyData | null;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The contest name.
 - `county: string` — The county name.
 
-**Returns**  
+**Returns**
+
 - `CountyData | null`:
-  - `CountyData` if found, otherwise `null`.
+    - `CountyData` if found, otherwise `null`.
 
 **Example**:
+
 ```ts
-    const countyResults = ncsbe.getCountyResults('US Senate', 'Wake');
-    if (countyResults) {
-      console.log(countyResults.precincts.length);
-      console.log(countyResults.precincts.candidates.length);
-    }
+const countyResults = ncsbe.getCountyResults('US Senate', 'Wake');
+if (countyResults) {
+    console.log(countyResults.precincts.length);
+    console.log(countyResults.precincts.candidates.length);
+}
 ```
+
 ---
 
 ### `getAllCandidateResults(candidateName)`
+
 **Description**  
 Retrieves **all election results** for a specified candidate **across all contests** in the dataset.
 
-**Signature**  
+**Signature**
+
 ```ts
 getAllCandidateResults(candidateName: string): CandidateData[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `candidateName: string` — The candidate’s name.
 
-**Returns**  
+**Returns**
+
 - `CandidateData[]`:
-  - An array of `CandidateData` objects for every contest that this candidate appears in.
+    - An array of `CandidateData` objects for every contest that this candidate appears in.
 
 **Example**:
+
 ```ts
-    const candidateResults = ncsbe.getAllCandidateResults('Candidate A');
-    console.log(candidateResults);
-    // Logs an array of CandidateData for each contest in which Candidate A is running
+const candidateResults = ncsbe.getAllCandidateResults('Candidate A');
+console.log(candidateResults);
+// Logs an array of CandidateData for each contest in which Candidate A is running
 ```
+
 ---
 
 ### `getCandidateVoteTotal(contest, candidateName)`
+
 **Description**  
 Computes the **total** number of votes for a given candidate in a specific contest (all counties and precincts combined).
 
-**Signature**  
+**Signature**
+
 ```ts
 getCandidateVoteTotal(contest: string, candidateName: string): number;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 - `candidateName: string` — The candidate’s name.
 
-**Returns**  
+**Returns**
+
 - `number`: The total vote count for the specified candidate in the contest.
 
 **Example**:
+
 ```ts
-    const totalVotes = ncsbe.getCandidateVoteTotal('US Senate', 'Candidate A');
-    console.log(totalVotes);
-    // Example output: 123456
+const totalVotes = ncsbe.getCandidateVoteTotal('US Senate', 'Candidate A');
+console.log(totalVotes);
+// Example output: 123456
 ```
+
 ---
 
 ### `getContestVoteTotals(contest)`
+
 **Description**  
 Returns a mapping of **all candidates** in a contest to their total vote counts.
 
-**Signature**  
+**Signature**
+
 ```ts
 getContestVoteTotals(contest: string): Record<string, number>;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `Record<string, number>`:
-  - An object where each key is a candidate name and each value is their total number of votes in the contest.
+    - An object where each key is a candidate name and each value is their total number of votes in the contest.
 
 **Example**:
+
 ```ts
-    const voteTotals = ncsbe.getContestVoteTotals('US Senate');
-    console.log(voteTotals);
-    // Example output: { 'Candidate A': 123456, 'Candidate B': 234567, ... }
+const voteTotals = ncsbe.getContestVoteTotals('US Senate');
+console.log(voteTotals);
+// Example output: { 'Candidate A': 123456, 'Candidate B': 234567, ... }
 ```
+
 ---
 
 ### `getCandidateVotePercentage(contest, candidateName)`
+
 **Description**  
 Retrieves a candidate's percentage of total votes for a given contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getCandidateVotePercentage(contest: string, candidateName: string): number;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 - `candidateName: string` - The name of the candidate.
 
-**Returns**  
+**Returns**
+
 - `number`:
-  - A decimal value representing the percentage of the vote a candidate holds.
+    - A decimal value representing the percentage of the vote a candidate holds.
 
 **Example**:
+
 ```ts
-    const votePercentage = ncsbe.getCandidateVotePercentage('US Senate', 'John Doe');
-    console.log(votePercentage);
-    // Expected output: 20.3
-    
+const votePercentage = ncsbe.getCandidateVotePercentage(
+    'US Senate',
+    'John Doe',
+);
+console.log(votePercentage);
+// Expected output: 20.3
 ```
+
 ---
 
 ### `getContestWinner(contest)`
+
 **Description**  
 Retrieves the data of the candidate who currently has the most votes in a given contest. This method can be used to see who is leading a contest, or who has won the contests after the final updates to the dataset.
+
 > Note: This method does not account for the case of a tie.
 
-**Signature**  
+**Signature**
+
 ```ts
 getContestWinner(contest: string): CandidateData;
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `CandidateData`:
-  - A `CandidateData` object holding the information for a candidate who is currently winning the given contest
+    - A `CandidateData` object holding the information for a candidate who is currently winning the given contest
 
 **Example**:
+
 ```ts
-    const currentLeader = ncsbe.getContestWinner('US Senate');
-    console.log(currentLeader);
-    // Expected output: { candidate: 'John Doe', party: 'DEM', votes: 13000 }
-    
+const currentLeader = ncsbe.getContestWinner('US Senate');
+console.log(currentLeader);
+// Expected output: { candidate: 'John Doe', party: 'DEM', votes: 13000 }
 ```
+
 ---
 
 ### `getCandidates(contest)`
+
 **Description**  
 Retrieves **all candidate data objects** for a specific contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getCandidates(contest: string): CandidateData[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `CandidateData[]`:
-  - Array of candidate data objects for this contest.
+    - Array of candidate data objects for this contest.
 
 **Example**:
+
 ```ts
     const candidatesData = ncsbe.getCandidates('US Senate');
     candidatesData.forEach(cd => {
       console.log(\`\${cd.candidate}: \${cd.votes}\`);
     });
 ```
+
 ---
 
 ### `getCounties(contest)`
+
 **Description**  
 Retrieves **all county data objects** for a specific contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getCounties(contest: string): CountyData[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `CountyData[]`:
-  - An array of county data objects.
+    - An array of county data objects.
 
 **Example**:
+
 ```ts
-    const countiesData = ncsbe.getCounties('US Senate');
-    console.log(countiesData[0]);
-    // logs the first county data object with precincts, votes, etc.
+const countiesData = ncsbe.getCounties('US Senate');
+console.log(countiesData[0]);
+// logs the first county data object with precincts, votes, etc.
 ```
+
 ---
 
 ### `getPrecincts(contest)`
+
 **Description**  
 Retrieves **all precinct data objects** across **all counties** for a specific contest.
 
-**Signature**  
+**Signature**
+
 ```ts
 getPrecincts(contest: string): PrecinctData[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `contest: string` — The name of the contest.
 
-**Returns**  
+**Returns**
+
 - `PrecinctData[]`:
-  - An array of precinct-level data objects, each containing vote tallies by candidate.
+    - An array of precinct-level data objects, each containing vote tallies by candidate.
 
 **Example**:
+
 ```ts
-    const precinctsData = ncsbe.getPrecincts('US Senate');
-    console.log(precinctsData.length);
-    // For each precinct, you can see which candidates got how many votes
+const precinctsData = ncsbe.getPrecincts('US Senate');
+console.log(precinctsData.length);
+// For each precinct, you can see which candidates got how many votes
 ```
+
 ---
+
 ### `getContestsByCandidate(candidateName)`
+
 **Description**  
 Retrieves all contests that a given candidate is a part of.
 
-**Signature**  
+**Signature**
+
 ```ts
 getContestsByCandidate(candidateName: string): ContestData[];
 ```
 
-**Parameters**  
+**Parameters**
+
 - `candidateName: string` - The name of the candidate.
 
-**Returns**  
+**Returns**
+
 - `ContestData[]`:
-  - An array of `ContestData` objects that a candidate was found in.
+    - An array of `ContestData` objects that a candidate was found in.
 
 **Example**:
+
 ```ts
-    const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
-    console.log(contestsForJohn.length);
+const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
+console.log(contestsForJohn.length);
 ```
 
-
 ## Notes
+
 1. **Data Freshness**: The NCSBE website updates election results periodically on election day and afterwards. Use `refresh()` to keep data synchronized.
 2. **Null Returns**: Many methods will return `null` or an empty array if the requested contest, county, or candidate does not exist in the dataset.
 3. **Date Formatting**: Ensure you pass the date as `YYYY-MM-DD`. Internally, the class will construct the URL to the NCSBE data file.
 
 ### Example Workflow
+
 ```ts
 // 1. Instantiate with the election date
 const ncsbe = new NCSBE('2024-11-05');

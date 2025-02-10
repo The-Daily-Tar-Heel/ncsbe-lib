@@ -2,16 +2,16 @@ import { Collector } from './collector';
 import { CandidateData, PrecinctData, CountyData, ContestData } from './types';
 
 /**
- * The `NCSBE` class provides an interface for fetching and querying election data 
- * from the North Carolina State Board of Elections (NCSBE). It uses the `Collector` 
+ * The `NCSBE` class provides an interface for fetching and querying election data
+ * from the North Carolina State Board of Elections (NCSBE). It uses the `Collector`
  * class to retrieve, parse, and format election data.
- * 
+ *
  * This class allows users to:
  * - Retrieve election data for a specific date.
  * - List available contests (races).
  * - List counties where voting occurred for a given contest.
  * - List precincts within a county for a specific contest.
- * 
+ *
  * Example usage:
  * ```typescript
  * const electionData = new NCSBE("2024-11-05");
@@ -58,7 +58,7 @@ class NCSBE {
     }
 
     /**
-     * Refreshes the election dataset by re-fetching and **completely replacing** `dataSet` 
+     * Refreshes the election dataset by re-fetching and **completely replacing** `dataSet`
      * with a new snapshot of the TSV file.
      * @returns {Promise<void>} - Resolves when the dataset is loaded.
      */
@@ -228,8 +228,13 @@ class NCSBE {
         const voteTotals = this.getContestVoteTotals(contest);
         if (!(candidateName in voteTotals)) return 0;
 
-        const totalVotes = Object.values(voteTotals).reduce((sum, votes) => sum + votes, 0);
-        return totalVotes > 0 ? (voteTotals[candidateName] / totalVotes) * 100 : 0;
+        const totalVotes = Object.values(voteTotals).reduce(
+            (sum, votes) => sum + votes,
+            0,
+        );
+        return totalVotes > 0
+            ? (voteTotals[candidateName] / totalVotes) * 100
+            : 0;
     }
 
     /**
@@ -241,13 +246,18 @@ class NCSBE {
     getContestWinner(contest: string): CandidateData | null {
         const contestData = this.getContestData(contest);
         if (!contestData || contestData.candidates.length === 0) return null;
-    
+
         const voteTotals = this.getContestVoteTotals(contest);
         if (Object.keys(voteTotals).length === 0) return null;
-        
-        const winnerName = Object.entries(voteTotals).reduce((a, b) => b[1] > a[1] ? b : a)[0];
-        
-        return contestData.candidates.find(c => c.candidate == winnerName) || null;
+
+        const winnerName = Object.entries(voteTotals).reduce((a, b) =>
+            b[1] > a[1] ? b : a,
+        )[0];
+
+        return (
+            contestData.candidates.find((c) => c.candidate == winnerName) ||
+            null
+        );
     }
 
     /**
@@ -283,14 +293,14 @@ class NCSBE {
     }
 
     /**
-     * Retrieves all contests that a given candidate is a part of. 
+     * Retrieves all contests that a given candidate is a part of.
      * @param {string} candidateName - The candidate's name
      * @returns {ContestData[]} An array of contest data objects that a candidate is a part of
      */
     getContestsByCandidate(candidateName: string): ContestData[] {
         if (!this.dataSet) return [];
-        return this.dataSet.filter(contest => 
-            contest.candidates.some(c => c.candidate === candidateName)
+        return this.dataSet.filter((contest) =>
+            contest.candidates.some((c) => c.candidate === candidateName),
         );
     }
 }

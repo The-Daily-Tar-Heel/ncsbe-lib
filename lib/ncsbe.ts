@@ -1,4 +1,4 @@
-import { Collector } from "./collector";
+import { Collector } from './collector';
 
 interface CandidateData {
     candidate: string;
@@ -33,7 +33,7 @@ class NCSBE {
     }
 
     private static makeBaseUrl(date: string): string {
-        return `https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/${date.replace(/-/g, "_")}/results_pct_${date.replace(/-/g, "")}.zip`;
+        return `https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/${date.replace(/-/g, '_')}/results_pct_${date.replace(/-/g, '')}.zip`;
     }
 
     async collect(): Promise<ContestData[]> {
@@ -46,15 +46,33 @@ class NCSBE {
     }
 
     listContests(): string[] {
-        return this.dataSet ? this.dataSet.map(row => row.contestName).filter((value, index, self) => self.indexOf(value) === index) : [];
+        return this.dataSet
+            ? this.dataSet
+                  .map((row) => row.contestName)
+                  .filter((value, index, self) => self.indexOf(value) === index)
+            : [];
     }
 
     listCounties(contest: string): string[] {
-        return this.dataSet ? this.dataSet.filter(row => row.contestName === contest).flatMap(row => row.counties.map(county => county.county)).filter((value, index, self) => self.indexOf(value) === index) : [];
+        return this.dataSet
+            ? this.dataSet
+                  .filter((row) => row.contestName === contest)
+                  .flatMap((row) => row.counties.map((county) => county.county))
+                  .filter((value, index, self) => self.indexOf(value) === index)
+            : [];
     }
 
     listPrecincts(contest: string, county: string): string[] {
-        return this.dataSet ? this.dataSet.filter(row => row.contestName === contest).flatMap(row => row.counties.filter(c => c.county === county).flatMap(c => c.precincts.map(p => p.precinct))).filter((value, index, self) => self.indexOf(value) === index) : [];
+        return this.dataSet
+            ? this.dataSet
+                  .filter((row) => row.contestName === contest)
+                  .flatMap((row) =>
+                      row.counties
+                          .filter((c) => c.county === county)
+                          .flatMap((c) => c.precincts.map((p) => p.precinct)),
+                  )
+                  .filter((value, index, self) => self.indexOf(value) === index)
+            : [];
     }
 
     listCandidates(contest: string): void {

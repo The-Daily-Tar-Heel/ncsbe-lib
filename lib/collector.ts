@@ -67,10 +67,12 @@ class Collector {
     private async fetchData(url: string): Promise<Buffer> {
         try {
             console.log(url);
-            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const response = await axios.get(url, {
+                responseType: 'arraybuffer',
+            });
             return response.data;
         } catch (error) {
-            console.error("Error fetching data: ", error);
+            console.error('Error fetching data: ', error);
             throw error;
         }
     }
@@ -79,8 +81,8 @@ class Collector {
         const zip = new AdmZip(zipData);
         const entries = zip.getEntries();
         return entries
-            .filter(entry => entry.entryName.endsWith('.txt'))
-            .map(entry => entry.getData().toString('utf8'))
+            .filter((entry) => entry.entryName.endsWith('.txt'))
+            .map((entry) => entry.getData().toString('utf8'))
             .join('\n');
     }
 
@@ -100,7 +102,7 @@ class Collector {
             absenteeByMail: Number(row['Absentee by Mail']),
             provisional: Number(row['Provisional']),
             totalVotes: Number(row['Total Votes']),
-            realPrecinct: row['Real Precinct'] === 'Y'
+            realPrecinct: row['Real Precinct'] === 'Y',
         };
     }
 
@@ -111,23 +113,39 @@ class Collector {
         return new Promise((resolve, reject) => {
             stream
                 .pipe(csv({ separator: '\t' }))
-                .pipe(new Transform({
-                    objectMode: true,
-                    transform: (row: Record<string, string>, _, callback) => {
-                        rows.push(this.transformRow(row));
-                        callback();
-                    }
-                }))
+                .pipe(
+                    new Transform({
+                        objectMode: true,
+                        transform: (
+                            row: Record<string, string>,
+                            _,
+                            callback,
+                        ) => {
+                            rows.push(this.transformRow(row));
+                            callback();
+                        },
+                    }),
+                )
                 .on('finish', () => resolve(rows))
                 .on('error', (error: any) => reject(error));
         });
     }
 
     private format(parsedData: ParsedRow[]): ContestData[] {
-        const data: Record<string, Record<string, Record<string, CandidateData[]>>> = {};
+        const data: Record<
+            string,
+            Record<string, Record<string, CandidateData[]>>
+        > = {};
 
-        parsedData.forEach(row => {
-            const { contestName, county, precinct, choice, choiceParty, totalVotes } = row;
+        parsedData.forEach((row) => {
+            const {
+                contestName,
+                county,
+                precinct,
+                choice,
+                choiceParty,
+                totalVotes,
+            } = row;
 
             if (!data[contestName]) {
                 data[contestName] = {};
@@ -144,28 +162,33 @@ class Collector {
             data[contestName][county][precinct].push({
                 candidate: choice,
                 party: choiceParty,
-                votes: totalVotes
+                votes: totalVotes,
             });
         });
 
-        return Object.keys(data).map(contestName => {
-            const counties: CountyData[] = Object.keys(data[contestName]).map(countyName => {
-                const precincts: PrecinctData[] = Object.keys(data[contestName][countyName]).map(precinctName => {
-                    return {
-                        precinct: precinctName,
-                        candidates: data[contestName][countyName][precinctName]
-                    };
-                });
+        return Object.keys(data).map((contestName) => {
+            const counties: CountyData[] = Object.keys(data[contestName]).map(
+                (countyName) => {
+                    const precincts: PrecinctData[] = Object.keys(
+                        data[contestName][countyName],
+                    ).map((precinctName) => {
+                        return {
+                            precinct: precinctName,
+                            candidates:
+                                data[contestName][countyName][precinctName],
+                        };
+                    });
 
-                return {
-                    county: countyName,
-                    precincts
-                };
-            });
+                    return {
+                        county: countyName,
+                        precincts,
+                    };
+                },
+            );
 
             return {
                 contestName,
-                counties
+                counties,
             };
         });
     }

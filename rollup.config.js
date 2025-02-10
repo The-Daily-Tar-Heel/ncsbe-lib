@@ -15,7 +15,7 @@ export default {
             file: 'dist/bundle.esm.js',
             format: 'esm',
             sourcemap: true,
-        }
+        },
     ],
     plugins: [
         resolve(),
@@ -23,7 +23,7 @@ export default {
         json(),
         typescript({
             tsconfig: './tsconfig.json',
-        })
+        }),
     ],
-    external: ['tslib']
+    external: ['tslib'],
 };

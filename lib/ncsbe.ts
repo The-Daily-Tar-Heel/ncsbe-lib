@@ -57,16 +57,31 @@ class NCSBE {
         this.dataSet = await this.collect();
     }
 
+    /**
+     * Refreshes the election dataset by re-fetching and **completely replacing** `dataSet` 
+     * with a new snapshot of the TSV file.
+     * @returns {Promise<void>} - Resolves when the dataset is loaded.
+     */
     async refresh(): Promise<void> {
         this.dataSet = await this.collect();
     }
 
+    /**
+     * Retrieves contest data for a specific contest name.
+     * @param {string} contest - The contest name.
+     * @returns {ContestData | null} The contest data or null if not found.
+     */
     private getContestData(contest: string): ContestData | null {
         return this.dataSet
             ? this.dataSet.find((row) => row.contestName === contest) || null
             : null;
     }
 
+    /**
+     * Retrieves a list of all contests (races) available in the dataset.
+     * @returns {string[]} An array of contest names.
+     * @throws Will return an empty array if `initialize()` has not been called.
+     */
     listContests(): string[] {
         return this.dataSet
             ? [...new Set(this.dataSet.map((row) => row.contestName))]
@@ -102,6 +117,12 @@ class NCSBE {
         return countyData ? countyData.precincts.map((p) => p.precinct) : [];
     }
 
+    /**
+     * Retrieves a list of candidates in a given contest.
+     * @param {string} contest - The contest name.
+     * @returns {string[]} An array of candidate names.
+     * @throws Will return an empty array if `initialize()` has not been called.
+     */
     listCandidates(contest: string): string[] {
         const contestData = this.getContestData(contest);
         return contestData
@@ -109,10 +130,21 @@ class NCSBE {
             : [];
     }
 
+    /**
+     * Retrieves a contest object by its name.
+     * @param {string} contest - The contest name.
+     * @returns {ContestData | null} The contest data or null if not found.
+     */
     getContest(contest: string): ContestData | null {
         return this.getContestData(contest);
     }
 
+    /**
+     * Retrieves detailed information about a specific candidate in a contest.
+     * @param {string} contest - The contest name.
+     * @param {string} candidateName - The candidate's name.
+     * @returns {CandidateData | null} The candidate's data or null if not found.
+     */
     getCandidateInfo(
         contest: string,
         candidateName: string,
@@ -125,6 +157,12 @@ class NCSBE {
             : null;
     }
 
+    /**
+     * Retrieves results for all precincts in a county for a given contest.
+     * @param {string} contest - The contest name.
+     * @param {string} county - The county name.
+     * @returns {CountyData | null} The county's election results or null if not found.
+     */
     getCountyResults(contest: string, county: string): CountyData | null {
         const contestData = this.getContestData(contest);
         return contestData
@@ -132,6 +170,11 @@ class NCSBE {
             : null;
     }
 
+    /**
+     * Retrieves all election results for a specific candidate across all contests.
+     * @param {string} candidateName - The candidate's name.
+     * @returns {CandidateData[]} An array of the candidate's results in different contests.
+     */
     getAllCandidateResults(candidateName: string): CandidateData[] {
         if (!this.dataSet) return [];
         return this.dataSet
@@ -139,6 +182,12 @@ class NCSBE {
             .filter((c) => c.candidate === candidateName);
     }
 
+    /**
+     * Retrieves the total vote count for a specific candidate in a contest.
+     * @param {string} contest - The contest name.
+     * @param {string} candidateName - The candidate's name.
+     * @returns {number} The total vote count for the candidate.
+     */
     getCandidateVoteTotal(contest: string, candidateName: string): number {
         const contestData = this.getContestData(contest);
         if (!contestData) return 0;
@@ -149,6 +198,11 @@ class NCSBE {
             .reduce((sum, c) => sum + c.votes, 0);
     }
 
+    /**
+     * Retrieves a dictionary mapping candidates to their total votes in a contest.
+     * @param {string} contest - The contest name.
+     * @returns {Record<string, number>} A record mapping candidate names to total vote counts.
+     */
     getContestVoteTotals(contest: string): Record<string, number> {
         const contestData = this.getContestData(contest);
         if (!contestData) return {};
@@ -164,16 +218,31 @@ class NCSBE {
         );
     }
 
+    /**
+     * Retrieves all candidates in a given contest.
+     * @param {string} contest - The contest name.
+     * @returns {CandidateData[]} An array of candidate data objects.
+     */
     getCandidates(contest: string): CandidateData[] {
         const contestData = this.getContest(contest);
         return contestData ? contestData.candidates : [];
     }
 
+    /**
+     * Retrieves all counties in a given contest.
+     * @param {string} contest - The contest name.
+     * @returns {CountyData[]} An array of count data objects.
+     */
     getCounties(contest: string): CountyData[] {
         const contestData = this.getContest(contest);
         return contestData ? contestData.counties : [];
     }
 
+    /**
+     * Retrieves all precincts in a given contest.
+     * @param {string} contest - The contest name.
+     * @returns {PrecinctData[]} An array of precinct data objects.
+     */
     getPrecincts(contest: string): PrecinctData[] {
         const contestData = this.getContest(contest);
         return contestData

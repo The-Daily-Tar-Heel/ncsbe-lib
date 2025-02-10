@@ -38,13 +38,14 @@ class Collector {
 
     /**
      * Collects and processes election data from the provided ZIP file URL.
+     * @param {number} lineLimit - Optional parameter that allows the user to specify how many lines of the TSV they want to collector to retrieve.
      * @returns {Promise<ContestDatap[]>} A structured representation of the election results.
      * @throws Will throw an error if fetching, extraction, or parsing fails.
      */
-    async collect(): Promise<ContestData[]> {
+    async collect(lineLimit?: number): Promise<ContestData[]> {
         try {
             const zipData = await this.fetchData(this.url);
-            const tsvData = this.extractTSVFiles(zipData);
+            const tsvData = this.extractTSVFiles(zipData, lineLimit);
             const parsedData = await this.parseTSVData(tsvData);
             return this.format(parsedData);
         } catch (error) {
@@ -74,14 +75,20 @@ class Collector {
     /**
      * Extracts TSV files from the provided ZIP data.
      * @param {Buffer} zipData - The binary ZIP file data.
+     * @param {number} [lineLimit] - (Optional) The number of lines to retrieve from the election dataset.
+     * If provided, only the most recently updated `lineLimit` lines of the TSV file is returned, greatly
+     * reducing the input of `parseTSVData`. If omitted, the full TSV file is returned.
      * @returns {string} The extracted TSV content as a string.
      */
-    private extractTSVFiles(zipData: Buffer): string {
+    private extractTSVFiles(zipData: Buffer, lineLimit?: number): string {
         const zip = new AdmZip(zipData);
         const entries = zip.getEntries();
         return entries
             .filter((entry) => entry.entryName.endsWith('.txt'))
-            .map((entry) => entry.getData().toString('utf8'))
+            .map((entry) => {
+                let content = entry.getData().toString('utf8');
+                return lineLimit ? content.split('\n').slice(0, lineLimit) : content;
+            })
             .join('\n');
     }
 
@@ -148,6 +155,18 @@ class Collector {
      * [
      *   {
      *     "contestName": "US_Senate",
+     *     "candidates": [
+     *       {
+     *         "candidate": "John Doe",
+     *         "party": "DEM",
+     *         "votes": 3710
+     *       },
+     *       {
+     *         "candidate": "Jane Smith",
+     *         "party": "REP",
+     *         "votes": 3585
+     *       }
+     *     ],
      *     "counties": [
      *       {
      *         "county": "Orange",
@@ -164,6 +183,21 @@ class Collector {
      *                 "candidate": "Jane Smith",
      *                 "party": "REP",
      *                 "votes": 1585
+     *               }
+     *             ]
+     *           },
+     *           {
+     *             "precinct": "01-02",
+     *             "candidates": [
+     *               {
+     *                 "candidate": "John Doe",
+     *                 "party": "DEM",
+     *                 "votes": 2000
+     *               },
+     *               {
+     *                 "candidate": "Jane Smith",
+     *                 "party": "REP",
+     *                 "votes": 2000
      *               }
      *             ]
      *           }

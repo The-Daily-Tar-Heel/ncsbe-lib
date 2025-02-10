@@ -6,7 +6,7 @@ NCSBE Lib is a JavaScript library created by the Daily Tar Heel engineering team
 Since the NCSBE re-uploads the entire dataset as a fresh snapshot every 5 minutes, this library is designed to replace the full dataset upon each refresh.
 Users can utilize this library in one of two ways:
 
-- **Basic Usage (No Database):** Simply call refresh() every five minutes to update the dataset. The in-memory dataset will always reflect the latest results, so functions like listContests() and getCandidates() will automatically reflect new data.
+- **Basic Usage (No Database):** Simply call `refresh()` every five minutes to update the dataset. The in-memory dataset will always reflect the latest results, so functions like `listContests()` and `getCandidates()` will automatically reflect new data.
 - **Advanced Usage (With a Database):** If you plan to store election data in your own database, you should detect changes before updating records to avoid redundant processing. We recommend hashing each record and only updating entries when their hash has changed.
 
 

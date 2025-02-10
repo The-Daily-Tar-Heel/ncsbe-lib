@@ -45,6 +45,10 @@ interface ContestData {
 class Collector {
     private url: string;
 
+    /**
+     * Creates a new Collector instance.
+     * @param {string} url - The URL of the ZIP file containing election data.
+     */
     constructor(url: string) {
         this.url = url;
     }
@@ -53,6 +57,11 @@ class Collector {
         return contestName.replace(/[()]/g, '').replace(/\s+/g, '_');
     }
 
+    /**
+     * Collects and processes election data from the provided ZIP file URL.
+     * @returns {Promise<ContestDatap[]>} A structured representation of the election results.
+     * @throws Will throw an error if fetching, extraction, or parsing fails.
+     */
     async collect(): Promise<ContestData[]> {
         try {
             const zipData = await this.fetchData(this.url);
@@ -64,6 +73,12 @@ class Collector {
         }
     }
 
+    /**
+     * Fetches a ZIP file from the provided URL, returning its raw binary data as a Buffer.
+     * @param {string} url - The URL to fetch the ZIP file from.
+     * @returns {Promise<Buffer>} The raw binary data of the ZIP file.
+     * @throws Will throw an error if the request fails.
+     */
     private async fetchData(url: string): Promise<Buffer> {
         try {
             console.log(url);
@@ -77,6 +92,11 @@ class Collector {
         }
     }
 
+    /**
+     * Extracts TSV files from the provided ZIP data.
+     * @param {Buffer} zipData - The binary ZIP file data.
+     * @returns {string} The extracted TSV content as a string.
+     */
     private extractTSVFiles(zipData: Buffer): string {
         const zip = new AdmZip(zipData);
         const entries = zip.getEntries();
@@ -86,6 +106,11 @@ class Collector {
             .join('\n');
     }
 
+    /**
+     * Transforms a row of the TSV file into a structured `ParsedRow` object.
+     * @param {Record<string, string>} row - A raw TSV row with string values.
+     * @returns {ParsedRow} An structured `ParsedRow` object.
+     */
     private transformRow(row: Record<string, string>): ParsedRow {
         return {
             county: row['County'],
@@ -106,6 +131,11 @@ class Collector {
         };
     }
 
+    /**
+     * Parses TSV data into an array of structured election result objects.
+     * @param {string} tsvData - The TSV file content as a string.
+     * @returns {Promise<ParsedRow[]>} An array of structured election result objects.
+     */
     private async parseTSVData(tsvData: string): Promise<ParsedRow[]> {
         const rows: ParsedRow[] = [];
         const stream = Readable.from(tsvData);
@@ -131,10 +161,53 @@ class Collector {
         });
     }
 
+    /**
+     * Formats parsed election data into a structured hierarchy.
+     * 
+     * **Expected Output (ContestData[]):**
+     * ```json
+     * [
+     *   {
+     *     "contestName": "US_Senate",
+     *     "counties": [
+     *       {
+     *         "county": "Orange",
+     *         "precincts": [
+     *           {
+     *             "precinct": "01-01",
+     *             "candidates": [
+     *               {
+     *                 "candidate": "John Doe",
+     *                 "party": "DEM",
+     *                 "votes": 1710
+     *               },
+     *               {
+     *                 "candidate": "Jane Smith",
+     *                 "party": "REP",
+     *                 "votes": 1585
+     *               }
+     *             ]
+     *           }
+     *         ]
+     *       }
+     *     ]
+     *   }
+     * ]
+     * ```
+     * 
+     * @param {ParsedRow[]} parsedData - The parsed election results.
+     * @returns {ContestData[]} - The formatted election data structured by contest, county, and precinct.
+     */
     private format(parsedData: ParsedRow[]): ContestData[] {
         const data: Record<
-            string,
-            Record<string, Record<string, CandidateData[]>>
+            string, // Contest name ("US Senate")
+            Record<
+                string, // County name ("Orange")
+                Record<
+                    string, // Precinct name ("01-01")
+                    CandidateData[] // Array of candidate vote results
+                >
+            >
         > = {};
 
         parsedData.forEach((row) => {

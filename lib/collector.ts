@@ -42,6 +42,23 @@ interface ContestData {
     counties: CountyData[];
 }
 
+/**
+ * The `Collector` class is responsible for fetching, parsing, and formatting election data
+ * from the North Carolina State Board of Elections (NCSBE).
+ *
+ * This class:
+ * - Downloads election data from a provided URL (ZIP file).
+ * - Extracts the TSV (tab-separated values) file inside the ZIP.
+ * - Parses the TSV file into structured election data.
+ * - Formats the parsed data into a hierarchical structure for easy analysis.
+ *
+ * Example usage:
+ * ```ts
+ * const collector = new Collector("https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip"); // 2024 election
+ * const results = await collector.collect();
+ * console.log(results);
+ * ```
+ */
 class Collector {
     private url: string;
 

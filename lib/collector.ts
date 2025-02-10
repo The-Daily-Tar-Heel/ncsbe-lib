@@ -2,50 +2,32 @@ import axios from 'axios';
 import AdmZip from 'adm-zip';
 import csv from 'csv-parser';
 import { Transform, Readable } from 'stream';
+import { CandidateData, PrecinctData, CountyData, ContestData, ParsedRow } from './types';
 
-interface ParsedRow {
-    county: string;
-    electionDate: string;
-    precinct: string;
-    contestGroupId: number;
-    contestType: string;
-    contestName: string;
-    choice: string;
-    choiceParty: string;
-    voteFor: number;
-    electionDay: number;
-    earlyVoting: number;
-    absenteeByMail: number;
-    provisional: number;
-    totalVotes: number;
-    realPrecinct: boolean;
-}
-
-interface CandidateData {
-    candidate: string;
-    party: string;
-    votes: number;
-}
-
-interface PrecinctData {
-    precinct: string;
-    candidates: CandidateData[];
-}
-
-interface CountyData {
-    county: string;
-    precincts: PrecinctData[];
-}
-
-interface ContestData {
-    contestName: string;
-    candidates: CandidateData[];
-    counties: CountyData[];
-}
-
+/**
+ * The `Collector` class is responsible for fetching, parsing, and formatting election data
+ * from the North Carolina State Board of Elections (NCSBE).
+ *
+ * This class:
+ * - Downloads election data from a provided URL (ZIP file).
+ * - Extracts the TSV (tab-separated values) file inside the ZIP.
+ * - Parses the TSV file into structured election data.
+ * - Formats the parsed data into a hierarchical structure for easy analysis.
+ *
+ * Example usage:
+ * ```ts
+ * const collector = new Collector("https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip"); // 2024 election
+ * const results = await collector.collect();
+ * console.log(results);
+ * ```
+ */
 class Collector {
     private url: string;
 
+    /**
+     * Creates a new Collector instance.
+     * @param {string} url - The URL of the ZIP file containing election data.
+     */
     constructor(url: string) {
         this.url = url;
     }
@@ -54,6 +36,11 @@ class Collector {
         return contestName.replace(/[()]/g, '').replace(/\s+/g, '_');
     }
 
+    /**
+     * Collects and processes election data from the provided ZIP file URL.
+     * @returns {Promise<ContestDatap[]>} A structured representation of the election results.
+     * @throws Will throw an error if fetching, extraction, or parsing fails.
+     */
     async collect(): Promise<ContestData[]> {
         try {
             const zipData = await this.fetchData(this.url);
@@ -65,6 +52,12 @@ class Collector {
         }
     }
 
+    /**
+     * Fetches a ZIP file from the provided URL, returning its raw binary data as a Buffer.
+     * @param {string} url - The URL to fetch the ZIP file from.
+     * @returns {Promise<Buffer>} The raw binary data of the ZIP file.
+     * @throws Will throw an error if the request fails.
+     */
     private async fetchData(url: string): Promise<Buffer> {
         try {
             console.log(url);
@@ -78,6 +71,11 @@ class Collector {
         }
     }
 
+    /**
+     * Extracts TSV files from the provided ZIP data.
+     * @param {Buffer} zipData - The binary ZIP file data.
+     * @returns {string} The extracted TSV content as a string.
+     */
     private extractTSVFiles(zipData: Buffer): string {
         const zip = new AdmZip(zipData);
         const entries = zip.getEntries();
@@ -87,6 +85,11 @@ class Collector {
             .join('\n');
     }
 
+    /**
+     * Transforms a row of the TSV file into a structured `ParsedRow` object.
+     * @param {Record<string, string>} row - A raw TSV row with string values.
+     * @returns {ParsedRow} An structured `ParsedRow` object.
+     */
     private transformRow(row: Record<string, string>): ParsedRow {
         return {
             county: row['County'],
@@ -107,6 +110,11 @@ class Collector {
         };
     }
 
+    /**
+     * Parses TSV data into an array of structured election result objects.
+     * @param {string} tsvData - The TSV file content as a string.
+     * @returns {Promise<ParsedRow[]>} An array of structured election result objects.
+     */
     private async parseTSVData(tsvData: string): Promise<ParsedRow[]> {
         const rows: ParsedRow[] = [];
         const stream = Readable.from(tsvData);
@@ -132,6 +140,43 @@ class Collector {
         });
     }
 
+    /**
+     * Formats parsed election data into a structured hierarchy.
+     * 
+     * **Expected Output (ContestData[]):**
+     * ```json
+     * [
+     *   {
+     *     "contestName": "US_Senate",
+     *     "counties": [
+     *       {
+     *         "county": "Orange",
+     *         "precincts": [
+     *           {
+     *             "precinct": "01-01",
+     *             "candidates": [
+     *               {
+     *                 "candidate": "John Doe",
+     *                 "party": "DEM",
+     *                 "votes": 1710
+     *               },
+     *               {
+     *                 "candidate": "Jane Smith",
+     *                 "party": "REP",
+     *                 "votes": 1585
+     *               }
+     *             ]
+     *           }
+     *         ]
+     *       }
+     *     ]
+     *   }
+     * ]
+     * ```
+     * 
+     * @param {ParsedRow[]} parsedData - The parsed election results.
+     * @returns {ContestData[]} - The formatted election data structured by contest, county, and precinct.
+     */
     private format(parsedData: ParsedRow[]): ContestData[] {
         const data: Record<
             string,

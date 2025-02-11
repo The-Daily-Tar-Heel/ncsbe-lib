@@ -1,11 +1,14 @@
-import { NCSBE } from './lib/ncsbe';
+export * from "./lib/ncsbe";
+export * from "./lib/types";
 
-async function main(): Promise<void> {
-    const ncsbe = new NCSBE('2024-11-05');
-    await ncsbe.initialize();
-    const contests = ncsbe.listContests();
-    console.log(contests[0]);
-    console.log(ncsbe.listCandidates(contests[0]));
-}
+// import { NCSBE } from './lib/ncsbe';
 
-main();
+// async function main(): Promise<void> {
+//     const ncsbe = new NCSBE('2024-11-05');
+//     await ncsbe.initialize();
+//     const contests = ncsbe.listContests();
+//     console.log(contests[0]);
+//     console.log(ncsbe.listCandidates(contests[0]));
+// }
+
+// main();

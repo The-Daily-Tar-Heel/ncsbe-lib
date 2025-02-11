@@ -2,7 +2,13 @@ import axios from 'axios';
 import AdmZip from 'adm-zip';
 import csv from 'csv-parser';
 import { Transform, Readable } from 'stream';
-import { CandidateData, PrecinctData, CountyData, ContestData, ParsedRow } from './types';
+import {
+    CandidateData,
+    PrecinctData,
+    CountyData,
+    ContestData,
+    ParsedRow,
+} from './types';
 
 /**
  * The `Collector` class is responsible for fetching, parsing, and formatting election data
@@ -136,13 +142,13 @@ class Collector {
                     }),
                 )
                 .on('finish', () => resolve(rows))
-                .on('error', (error: any) => reject(error));
+                .on('error', (error: unknown) => reject(error));
         });
     }
 
     /**
      * Formats parsed election data into a structured hierarchy.
-     * 
+     *
      * **Expected Output (ContestData[]):**
      * ```json
      * [
@@ -173,7 +179,7 @@ class Collector {
      *   }
      * ]
      * ```
-     * 
+     *
      * @param {ParsedRow[]} parsedData - The parsed election results.
      * @returns {ContestData[]} - The formatted election data structured by contest, county, and precinct.
      */

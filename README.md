@@ -21,7 +21,9 @@ Users can utilize this library in one of two ways:
 - Filter election results by candidate, county, or precinct.
 
 ## Installation
+
 Ensure you have TypeScript installed in your project. You can install the node module using:
+
 ```sh
 npm install ncsbe-lib
 ```

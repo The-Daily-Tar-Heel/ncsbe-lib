@@ -1,6 +1,6 @@
 {
   "name": "ncsbe-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "types": "dist/index.d.ts",
@@ -52,8 +52,16 @@
     "url": "https://davidsonleo.com"
   },
   "contributers": [
-    {"name":"Leo Davidson", "email": "ldavidson@unc.edu", "url": "https://davidsonleo.com"},
-    {"name": "Gregory Glasby", "email": "trace.glasby@gmail.com", "url": "https://traceglasby.com"}
+    {
+      "name": "Leo Davidson",
+      "email": "ldavidson@unc.edu",
+      "url": "https://davidsonleo.com"
+    },
+    {
+      "name": "Gregory Glasby",
+      "email": "trace.glasby@gmail.com",
+      "url": "https://traceglasby.com"
+    }
   ],
   "repository": {
     "type": "git",

@@ -22,17 +22,44 @@
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",
     "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "elections",
+    "nc-elections",
+    "north-carolina",
+    "ncsbe",
+    "election-results",
+    "vote-tracking",
+    "voting-data",
+    "tsv-parser",
+    "typescript",
+    "nodejs",
+    "election-data",
+    "candidates",
+    "contests",
+    "precincts",
+    "counties",
+    "government-data",
+    "data-parsing",
+    "open-data",
+    "json",
+    "npm-package",
+    "political-data",
+    "live-results"
+  ],
+  "author": {
+    "name": "Leo Davidson",
+    "email": "ldavidson@unc.edu",
+    "url": "https://davidsonleo.com"
+  },
   "contributers": [
-    {"name":"Leo Davidson", "url":"https://github.com/leoddc"},
+    {"name":"Leo Davidson", "email": "ldavidson@unc.edu", "url": "https://davidsonleo.com"},
     {"name": "Gregory Glasby", "email": "trace.glasby@gmail.com", "url": "https://traceglasby.com"}
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/The-Daily-Tar-Heel/ncsbe-lib"
   },
-  "license": "ISC",
+  "license": "MIT",
   "description": "JavaScript library for working with North Carolina State Board of Elections (NCSBE) historical election data",
   "dependencies": {
     "adm-zip": "^0.5.16",

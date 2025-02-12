@@ -101,6 +101,8 @@ console.log(contests);
 // Example output: [ 'US Senate', 'US House District 1', 'Governor', ... ]
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `listCounties(contest)`
@@ -129,6 +131,8 @@ const counties = ncsbe.listCounties('US Senate');
 console.log(counties);
 // Example output: [ 'Wake', 'Mecklenburg', 'Durham', ... ]
 ```
+
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -160,6 +164,8 @@ console.log(precincts);
 // Example output: [ 'Precinct 01-01', 'Precinct 01-02', ... ]
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `listCandidates(contest)`
@@ -188,6 +194,8 @@ const candidates = ncsbe.listCandidates('US Senate');
 console.log(candidates);
 // Example output: [ 'Candidate A', 'Candidate B', 'Candidate C', ... ]
 ```
+
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -220,6 +228,8 @@ if (contestData) {
     console.log(conteestData.candidates.length);
 }
 ```
+
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -254,6 +264,8 @@ if (candidateInfo) {
 }
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getCountyResults(contest, county)`
@@ -287,6 +299,8 @@ if (countyResults) {
 }
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getAllCandidateResults(candidateName)`
@@ -316,6 +330,8 @@ const candidateResults = ncsbe.getAllCandidateResults('Candidate A');
 console.log(candidateResults);
 // Logs an array of CandidateData for each contest in which Candidate A is running
 ```
+
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -347,6 +363,8 @@ console.log(totalVotes);
 // Example output: 123456
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getContestVoteTotals(contest)`
@@ -376,6 +394,8 @@ const voteTotals = ncsbe.getContestVoteTotals('US Senate');
 console.log(voteTotals);
 // Example output: { 'Candidate A': 123456, 'Candidate B': 234567, ... }
 ```
+
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -411,6 +431,8 @@ console.log(votePercentage);
 // Expected output: 20.3
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getContestWinner(contest)`
@@ -443,6 +465,8 @@ console.log(currentLeader);
 // Expected output: { candidate: 'John Doe', party: 'DEM', votes: 13000 }
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getCandidates(contest)`
@@ -474,6 +498,8 @@ getCandidates(contest: string): CandidateData[];
     });
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getCounties(contest)`
@@ -504,6 +530,8 @@ console.log(countiesData[0]);
 // logs the first county data object with precincts, votes, etc.
 ```
 
+[🔼 Back to Top](#table-of-contents)
+
 ---
 
 ### `getPrecincts(contest)`
@@ -533,6 +561,7 @@ const precinctsData = ncsbe.getPrecincts('US Senate');
 console.log(precinctsData.length);
 // For each precinct, you can see which candidates got how many votes
 ```
+[🔼 Back to Top](#table-of-contents)
 
 ---
 
@@ -562,12 +591,15 @@ getContestsByCandidate(candidateName: string): ContestData[];
 const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
 console.log(contestsForJohn.length);
 ```
+[🔼 Back to Top](#table-of-contents)  
 
 ## Notes
 
 1. **Data Freshness**: The NCSBE website updates election results periodically on election day and afterwards. Use `refresh()` to keep data synchronized.
 2. **Null Returns**: Many methods will return `null` or an empty array if the requested contest, county, or candidate does not exist in the dataset.
 3. **Date Formatting**: Ensure you pass the date as `YYYY-MM-DD`. Internally, the class will construct the URL to the NCSBE data file.
+
+[🔼 Back to Top](#table-of-contents)  
 
 ### Example Workflow
 
@@ -592,3 +624,4 @@ setInterval(async () => {
   console.log('Data refreshed!');
 }, 300000); // every 5 minutes
 ```
+[🔼 Back to Top](#table-of-contents)  

@@ -56,7 +56,7 @@ We recommend **hashing** each record and only updating entries when their hash h
 
 In fact, we ran into this very problem before making this library and solved it via hashing. In our Firestore database, we stored each contest name as the key of the root collection, then stored all of the county and candidate data in fields/subcollections of the primary collection. When we "refreshed" (replaced the old file/dataset with the new one), we looped through every contest, hashed all of the data it held. If the hash differed, we updated that contest and if not, we skip the entire contest. This way, we only update contests in our database that actually saw changes which greatly improved space and efficiency.
 
-Below is some pseudocode similar to our approach. We wrote our own `hashService`, but you can implement this however you want, the logic follows just the same. 
+Below is some pseudocode similar to our approach. We wrote our own `hashService`, but you can implement this however you want, the logic follows just the same.
 
 ```js
 await ncsbe.refresh();
@@ -71,7 +71,9 @@ for (const contest of allData) {
 
     // Did anything change? If not, skip this contest.
     if (currentHash === previousHash) {
-        logger.info(`No changes detected for contest '${contest.contestName}'.`);
+        logger.info(
+            `No changes detected for contest '${contest.contestName}'.`,
+        );
         continue;
     }
 

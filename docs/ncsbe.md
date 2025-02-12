@@ -3,44 +3,44 @@
 `NCSBE` is the primary class for working with NCSBE data, providing an interface for retrieving, parsing, and querying election results data from the North Carolina State Board of Elections (NCSBE). It internally uses the Collector class (not shown in this README) to download and extract TSV data from the NCSBE dataset ZIP files.
 
 # Table of Contents
-1. [Usage](#usage)  
-   - [Creating an NCSBE instance](#creating-an-ncsbe-instance)
-2. [Data Fetching and Updating](#data-fetching-and-updating)  
-   - [`initialize()`](#initialize)  
-   - [`refresh()`](#refresh)
-3. [Query Functions](#query-functions)  
 
-   <details>
-   <summary>Expand Query Functions</summary>
+1. [Usage](#usage)
+    - [Creating an NCSBE instance](#creating-an-ncsbe-instance)
+2. [Data Fetching and Updating](#data-fetching-and-updating)
+    - [`initialize()`](#initialize)
+    - [`refresh()`](#refresh)
+3. [Query Functions](#query-functions)
 
-   - **General Queries**  
-     - [`listContests()`](#listcontests)  
-     - [`listCandidates(contest)`](#listcandidatescontest)  
-   - **Location-Based Queries**  
-     - [`listCounties(contest)`](#listcountiescontest)  
-     - [`listPrecincts(contest, county)`](#listprecinctscontest-county)  
-   - **Contest & Candidate Details**  
-     - [`getContest(contest)`](#getcontestcontest)  
-     - [`getCandidateInfo(contest, candidateName)`](#getcandidateinfocontest-candidatename)  
-     - [`getCandidates(contest)`](#getcandidatescontest)  
-   - **Results Queries**  
-     - [`getCountyResults(contest, county)`](#getcountyresultscontest-county)  
-     - [`getAllCandidateResults(candidateName)`](#getallcandidateresultscandidatename)  
-     - [`getCandidateVoteTotal(contest, candidateName)`](#getcandidatevotetotalcontest-candidatename)  
-     - [`getContestVoteTotals(contest)`](#getcontestvotetotalscontest)  
-     - [`getCandidateVotePercentage(contest, candidateName)`](#getcandidatevotepercentagecontest-candidatename)  
-     - [`getContestWinner(contest)`](#getcontestwinnercontest)  
-   - **Geographic Breakdown**  
-     - [`getCounties(contest)`](#getcountiescontest)  
-     - [`getPrecincts(contest)`](#getprecinctscontest)  
-   - **Other Queries**  
-     - [`getContestsByCandidate(candidateName)`](#getcontestsbycandidatecandidatename)  
+    <details>
+    <summary>Expand Query Functions</summary>
 
-   </details>
+    - **General Queries**
+        - [`listContests()`](#listcontests)
+        - [`listCandidates(contest)`](#listcandidatescontest)
+    - **Location-Based Queries**
+        - [`listCounties(contest)`](#listcountiescontest)
+        - [`listPrecincts(contest, county)`](#listprecinctscontest-county)
+    - **Contest & Candidate Details**
+        - [`getContest(contest)`](#getcontestcontest)
+        - [`getCandidateInfo(contest, candidateName)`](#getcandidateinfocontest-candidatename)
+        - [`getCandidates(contest)`](#getcandidatescontest)
+    - **Results Queries**
+        - [`getCountyResults(contest, county)`](#getcountyresultscontest-county)
+        - [`getAllCandidateResults(candidateName)`](#getallcandidateresultscandidatename)
+        - [`getCandidateVoteTotal(contest, candidateName)`](#getcandidatevotetotalcontest-candidatename)
+        - [`getContestVoteTotals(contest)`](#getcontestvotetotalscontest)
+        - [`getCandidateVotePercentage(contest, candidateName)`](#getcandidatevotepercentagecontest-candidatename)
+        - [`getContestWinner(contest)`](#getcontestwinnercontest)
+    - **Geographic Breakdown**
+        - [`getCounties(contest)`](#getcountiescontest)
+        - [`getPrecincts(contest)`](#getprecinctscontest)
+    - **Other Queries**
+        - [`getContestsByCandidate(candidateName)`](#getcontestsbycandidatecandidatename)
+
+    </details>
 
 4. [Notes](#notes)
 5. [Example Workflow](#example-workflow)
-
 
 ## Usage
 
@@ -561,6 +561,7 @@ const precinctsData = ncsbe.getPrecincts('US Senate');
 console.log(precinctsData.length);
 // For each precinct, you can see which candidates got how many votes
 ```
+
 [🔼 Back to Top](#table-of-contents)
 
 ---
@@ -591,7 +592,8 @@ getContestsByCandidate(candidateName: string): ContestData[];
 const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
 console.log(contestsForJohn.length);
 ```
-[🔼 Back to Top](#table-of-contents)  
+
+[🔼 Back to Top](#table-of-contents)
 
 ## Notes
 
@@ -599,7 +601,7 @@ console.log(contestsForJohn.length);
 2. **Null Returns**: Many methods will return `null` or an empty array if the requested contest, county, or candidate does not exist in the dataset.
 3. **Date Formatting**: Ensure you pass the date as `YYYY-MM-DD`. Internally, the class will construct the URL to the NCSBE data file.
 
-[🔼 Back to Top](#table-of-contents)  
+[🔼 Back to Top](#table-of-contents)
 
 ### Example Workflow
 
@@ -624,4 +626,5 @@ setInterval(async () => {
   console.log('Data refreshed!');
 }, 300000); // every 5 minutes
 ```
-[🔼 Back to Top](#table-of-contents)  
+
+[🔼 Back to Top](#table-of-contents)

@@ -24,8 +24,16 @@
   },
   "keywords": [],
   "author": "",
+  "contributers": [
+    {"name":"Leo Davidson", "url":"https://github.com/leoddc"},
+    {"name": "Gregory Glasby", "email": "trace.glasby@gmail.com", "url": "https://traceglasby.com"}
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/The-Daily-Tar-Heel/ncsbe-lib"
+  },
   "license": "ISC",
-  "description": "",
+  "description": "JavaScript library for working with North Carolina State Board of Elections (NCSBE) historical election data",
   "dependencies": {
     "adm-zip": "^0.5.16",
     "csv-parser": "^3.2.0",

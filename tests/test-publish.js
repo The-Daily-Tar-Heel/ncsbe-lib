@@ -41,7 +41,7 @@ try {
 
     // Install the local package
     console.log('📥 Installing packed package...');
-    execSync(`npm install ../${packageFile}`, {
+    execSync(`npm install ../../${packageFile}`, {
         cwd: TEST_DIR,
         stdio: 'inherit',
     });
@@ -54,22 +54,57 @@ try {
         import { NCSBE } from "ncsbe-lib";
 
         async function runTests() {
+
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
             console.log("Running NCSBE Tests...");
 
-            const ncsbe = new NCSBE("2024-11-05");
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
+
+            const ncsbe = new NCSBE("2024-11-05");            
 
             console.log("Fetching election data...");
             await ncsbe.initialize();
             console.log("Data initialized.");
 
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
+
+            console.log("Fetch first 3 entries of entire dataset:");
+            console.log(ncsbe.getDataset().slice(0, 3));
+
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
             const contests = ncsbe.listContests().slice(0, 5);
             console.log("First 5 Contests:", contests);
+
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
 
             const testContest = contests[4];
             console.log("Testing contest:", testContest);
 
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
             const counties = ncsbe.listCounties(testContest);
             console.log("Counties participating:", counties);
+
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
 
             if (counties.length > 0) {
                 const testCounty = counties[0];
@@ -82,25 +117,53 @@ try {
             const candidates = ncsbe.listCandidates(testContest);
             console.log("Candidates in", testContest, ":", candidates);
 
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
+
             if (candidates.length > 0) {
                 const testCandidate = candidates[8];
                 console.log("Testing candidate:", testCandidate);
 
+                console.log(" ");
+                console.log("---------------------");
+                console.log(" ");
+
                 const voteTotal = ncsbe.getCandidateVoteTotal(testContest, testCandidate);
                 console.log(testCandidate + "Total Votes:", voteTotal);
+
+                console.log(" ");
+                console.log("---------------------");
+                console.log(" ");
 
                 const votePercentage = ncsbe.getCandidateVotePercentage(testContest, testCandidate);
                 console.log(testCandidate + "Vote Percentage:", votePercentage.toFixed(2) + "%");
 
+                console.log(" ");
+                console.log("---------------------");
+                console.log(" ");
+
                 const candidateContests = ncsbe.getContestsByCandidate(testCandidate);
                 console.log("Contests for", testCandidate, ":", candidateContests.map(c => c.contestName));
 
+                console.log(" ");
+                console.log("---------------------");
+                console.log(" ");
+
                 const candidateInfo = ncsbe.getCandidateInfo(testContest, testCandidate);
                 console.log("Candidate Info for", testCandidate, ":", candidateInfo);
+
+                console.log(" ");
+                console.log("---------------------");
+                console.log(" ");
             }
 
             const winner = ncsbe.getContestWinner(testContest);
             console.log("Winner of", testContest, ":", winner);
+
+            console.log(" ");
+            console.log("---------------------");
+            console.log(" ");
 
             console.log("All tests completed successfully.");
         }

@@ -15,8 +15,12 @@
     <summary>Expand Query Functions</summary>
 
     - **General Queries**
+        - [`getDataset()`](#getdataset)
         - [`listContests()`](#listcontests)
         - [`listCandidates(contest)`](#listcandidatescontest)
+    - **Existence Queries**
+        - [`hasContest()`](#hascontest)
+        - [`hasCandidate()`](#hascandidate)
     - **Location-Based Queries**
         - [`listCounties(contest)`](#listcountiescontest)
         - [`listPrecincts(contest, county)`](#listprecinctscontest-county)
@@ -29,8 +33,10 @@
         - [`getAllCandidateResults(candidateName)`](#getallcandidateresultscandidatename)
         - [`getCandidateVoteTotal(contest, candidateName)`](#getcandidatevotetotalcontest-candidatename)
         - [`getContestVoteTotals(contest)`](#getcontestvotetotalscontest)
+        - [`getTotalVotesForContest(contest)`](#gettotalvotesforcontest)
         - [`getCandidateVotePercentage(contest, candidateName)`](#getcandidatevotepercentagecontest-candidatename)
         - [`getContestWinner(contest)`](#getcontestwinnercontest)
+        - [`getClosestRace()`](#getclosestrace)
     - **Geographic Breakdown**
         - [`getCounties(contest)`](#getcountiescontest)
         - [`getPrecincts(contest)`](#getprecinctscontest)
@@ -78,6 +84,41 @@ await ncsbe.refresh();
 
 Below is a reference of the main query functions provided by NCSBE. Each method assumes `initialize()` has already been called.
 
+### `getDataset()`
+
+**Description**  
+Retrieves the entire election dataset.
+
+**Signature**
+
+```ts
+getDataset(): ContestData[];
+```
+
+**Returns**
+
+- `ContestData[]`: An array of `ContestData` objects.
+
+**Example**:
+
+```ts
+const dataSet = ncsbe.getDataset();
+console.log(dataSet[0]);
+/* Example output:
+{
+    contestName: 'NC_LIEUTENANT_GOVERNOR',
+    candidates: [ [Object], [Object], [Object], [Object] ],
+    counties: [
+        [Object], [Object], [Object], ...
+    ]
+}
+*/
+```
+
+[🔼 Back to Top](#table-of-contents)
+
+---
+
 ### `listContests()`
 
 **Description**  
@@ -98,7 +139,7 @@ listContests(): string[];
 ```ts
 const contests = ncsbe.listContests();
 console.log(contests);
-// Example output: [ 'US Senate', 'US House District 1', 'Governor', ... ]
+// Example output: [ 'US_SENATE', 'US_PRESIDENT', ... ]
 ```
 
 [🔼 Back to Top](#table-of-contents)
@@ -118,7 +159,7 @@ listCounties(contest: string): string[];
 
 **Parameters**
 
-- `contest: string` — The name of the contest (e.g., "US Senate").
+- `contest: string` — The name of the contest (e.g., "US_SENATE").
 
 **Returns**
 
@@ -127,7 +168,7 @@ listCounties(contest: string): string[];
 **Example**:
 
 ```ts
-const counties = ncsbe.listCounties('US Senate');
+const counties = ncsbe.listCounties('US_SENATE');
 console.log(counties);
 // Example output: [ 'Wake', 'Mecklenburg', 'Durham', ... ]
 ```
@@ -149,7 +190,7 @@ listPrecincts(contest: string, county: string): string[];
 
 **Parameters**
 
-- `contest: string` — The name of the contest (e.g., "US Senate").
+- `contest: string` — The name of the contest (e.g., "US_SENATE").
 - `county: string` — The name of the county (e.g., "Wake").
 
 **Returns**
@@ -159,7 +200,7 @@ listPrecincts(contest: string, county: string): string[];
 **Example**:
 
 ```ts
-const precincts = ncsbe.listPrecincts('US Senate', 'Wake');
+const precincts = ncsbe.listPrecincts('US_SENATE', 'Wake');
 console.log(precincts);
 // Example output: [ 'Precinct 01-01', 'Precinct 01-02', ... ]
 ```
@@ -181,7 +222,7 @@ listCandidates(contest: string): string[];
 
 **Parameters**
 
-- `contest: string` — The name of the contest (e.g., "US Senate").
+- `contest: string` — The name of the contest (e.g., "US_SENATE").
 
 **Returns**
 
@@ -190,9 +231,71 @@ listCandidates(contest: string): string[];
 **Example**:
 
 ```ts
-const candidates = ncsbe.listCandidates('US Senate');
+const candidates = ncsbe.listCandidates('US_SENATE');
 console.log(candidates);
 // Example output: [ 'Candidate A', 'Candidate B', 'Candidate C', ... ]
+```
+
+[🔼 Back to Top](#table-of-contents)
+
+---
+
+### `hasContest(contest)`
+
+**Description**  
+Checks whether a given contest exists in the dataset.
+
+**Signature**
+
+```ts
+hasContest(contest: string): boolean;
+```
+
+**Parameters**
+
+- `contest: string` — The name of the contest (e.g., "US_SENATE").
+
+**Returns**
+
+- `boolean`: True if the contest exists, false otherwise.
+
+**Example**:
+
+```ts
+const presidentExists = ncsbe.hasContest('US_PRESIDENT');
+console.log(presidentExists);
+// Example output: true
+```
+
+[🔼 Back to Top](#table-of-contents)
+
+---
+
+### `hasCandidate(candidate)`
+
+**Description**  
+Checks whether a given candidate exists in the dataset.
+
+**Signature**
+
+```ts
+hasCandidate(candidate: string): boolean;
+```
+
+**Parameters**
+
+- `candidate: string` — The name of the candidate (e.g., "John Doe").
+
+**Returns**
+
+- `boolean`: True if the candidate exists, false otherwise.
+
+**Example**:
+
+```ts
+const joeExists = ncsbe.hasContest('John Doe');
+console.log(joeExists);
+// Example output: false
 ```
 
 [🔼 Back to Top](#table-of-contents)
@@ -222,7 +325,7 @@ getContest(contest: string): ContestData | null;
 **Example**:
 
 ```ts
-const contestData = ncsbe.getContest('US Senate');
+const contestData = ncsbe.getContest('US_SENATE');
 if (contestData) {
     console.log(contestData.counties.length);
     console.log(conteestData.candidates.length);
@@ -257,7 +360,7 @@ getCandidateInfo(contest: string, candidateName: string): CandidateData | null;
 **Example**:
 
 ```ts
-const candidateInfo = ncsbe.getCandidateInfo('US Senate', 'Candidate A');
+const candidateInfo = ncsbe.getCandidateInfo('US_SENATE', 'Candidate A');
 if (candidateInfo) {
     console.log(candidateInfo.party);
     console.log(candidateInfo.votes);
@@ -292,7 +395,7 @@ getCountyResults(contest: string, county: string): CountyData | null;
 **Example**:
 
 ```ts
-const countyResults = ncsbe.getCountyResults('US Senate', 'Wake');
+const countyResults = ncsbe.getCountyResults('US_SENATE', 'Wake');
 if (countyResults) {
     console.log(countyResults.precincts.length);
     console.log(countyResults.precincts.candidates.length);
@@ -358,7 +461,7 @@ getCandidateVoteTotal(contest: string, candidateName: string): number;
 **Example**:
 
 ```ts
-const totalVotes = ncsbe.getCandidateVoteTotal('US Senate', 'Candidate A');
+const totalVotes = ncsbe.getCandidateVoteTotal('US_SENATE', 'Candidate A');
 console.log(totalVotes);
 // Example output: 123456
 ```
@@ -390,9 +493,40 @@ getContestVoteTotals(contest: string): Record<string, number>;
 **Example**:
 
 ```ts
-const voteTotals = ncsbe.getContestVoteTotals('US Senate');
+const voteTotals = ncsbe.getContestVoteTotals('US_SENATE');
 console.log(voteTotals);
 // Example output: { 'Candidate A': 123456, 'Candidate B': 234567, ... }
+```
+
+[🔼 Back to Top](#table-of-contents)
+
+---
+
+### `getTotalVotesForContest(contest)`
+
+**Description**  
+Retrieves the total number of votes for a given contest.
+
+**Signature**
+
+```ts
+getTotalVotesForContest(contest: string): number;
+```
+
+**Parameters**
+
+- `contest: string` — The name of the contest.
+
+**Returns**
+
+- `number`: The total number of votes for a given contest.
+
+**Example**:
+
+```ts
+const totalVotes = ncsbe.getTotalVotesForContest('US_PRESIDENT');
+console.log(totalVotes);
+// Example output: 139381
 ```
 
 [🔼 Back to Top](#table-of-contents)
@@ -424,7 +558,7 @@ getCandidateVotePercentage(contest: string, candidateName: string): number;
 
 ```ts
 const votePercentage = ncsbe.getCandidateVotePercentage(
-    'US Senate',
+    'US_SENATE',
     'John Doe',
 );
 console.log(votePercentage);
@@ -460,9 +594,39 @@ getContestWinner(contest: string): CandidateData;
 **Example**:
 
 ```ts
-const currentLeader = ncsbe.getContestWinner('US Senate');
+const currentLeader = ncsbe.getContestWinner('US_SENATE');
 console.log(currentLeader);
 // Expected output: { candidate: 'John Doe', party: 'DEM', votes: 13000 }
+```
+
+[🔼 Back to Top](#table-of-contents)
+
+---
+
+### `getClosestRace()`
+
+**Description**  
+Finds the contest with the smallest margin between the top two candidates.
+
+> Note: If there is a tie, this method will return it.
+
+**Signature**
+
+```ts
+getClosest(): ContestData;
+```
+
+**Returns**
+
+- `ContestData`:
+    - A `ContestData` object holding the information for the contest that has the smallest margin between the top two candidates
+
+**Example**:
+
+```ts
+const closestRace = ncsbe.getClosestRace();
+console.log(closestRace.contestName);
+// Expected output: 'US_PRESIDENT'
 ```
 
 [🔼 Back to Top](#table-of-contents)
@@ -492,7 +656,7 @@ getCandidates(contest: string): CandidateData[];
 **Example**:
 
 ```ts
-    const candidatesData = ncsbe.getCandidates('US Senate');
+    const candidatesData = ncsbe.getCandidates('US_SENATE');
     candidatesData.forEach(cd => {
       console.log(\`\${cd.candidate}: \${cd.votes}\`);
     });
@@ -525,7 +689,7 @@ getCounties(contest: string): CountyData[];
 **Example**:
 
 ```ts
-const countiesData = ncsbe.getCounties('US Senate');
+const countiesData = ncsbe.getCounties('US_SENATE');
 console.log(countiesData[0]);
 // logs the first county data object with precincts, votes, etc.
 ```
@@ -557,7 +721,7 @@ getPrecincts(contest: string): PrecinctData[];
 **Example**:
 
 ```ts
-const precinctsData = ncsbe.getPrecincts('US Senate');
+const precinctsData = ncsbe.getPrecincts('US_SENATE');
 console.log(precinctsData.length);
 // For each precinct, you can see which candidates got how many votes
 ```
@@ -589,7 +753,7 @@ getContestsByCandidate(candidateName: string): ContestData[];
 **Example**:
 
 ```ts
-const contestsForJohn = ncsbe.getContestsByCandidate('US Senate', 'John Doe');
+const contestsForJohn = ncsbe.getContestsByCandidate('US_SENATE', 'John Doe');
 console.log(contestsForJohn.length);
 ```
 
@@ -617,7 +781,7 @@ const contests = ncsbe.listContests();
 console.log(contests);
 
 // 4. For a specific contest, get total votes for Candidate A
-const candidateATotal = ncsbe.getCandidateVoteTotal('US Senate', 'Candidate A');
+const candidateATotal = ncsbe.getCandidateVoteTotal('US_SENATE', 'Candidate A');
 console.log(\`Candidate A total votes: \${candidateATotal}\`);
 
 // 5. Refresh data periodically for live updates

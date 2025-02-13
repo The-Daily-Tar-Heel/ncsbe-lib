@@ -78,6 +78,15 @@ class NCSBE {
     }
 
     /**
+     * Retrieves the entire election dataset.
+     * @returns {ContestData[] | null} The dataset, or null if it hasn't been initialized.
+     * @throws Will return null if `initialize()` has not been called.
+     */
+    getDataset(): ContestData[] | null {
+        return this.dataSet ? this.dataSet : null;
+    }
+
+    /**
      * Retrieves a list of all contests (races) available in the dataset.
      * @returns {string[]} An array of contest names.
      * @throws Will return an empty array if `initialize()` has not been called.
@@ -219,6 +228,16 @@ class NCSBE {
     }
 
     /**
+     * Retrieves the total number of votes for a given contest.
+     * @param {string} contest - The contest name.
+     * @returns {number} The total number of votes for a given contest.
+     */
+    getTotalVotesForContest(contest: string): number {
+        const voteTotals = this.getContestVoteTotals(contest);
+        return Object.values(voteTotals).reduce((sum, votes) => sum + votes, 0);
+    }
+
+    /**
      * Retrieve a candidate's percentage of total votes in a contest.
      * @param {string} contest - The contest name
      * @param {string} candidateName - The candidate's name
@@ -228,10 +247,8 @@ class NCSBE {
         const voteTotals = this.getContestVoteTotals(contest);
         if (!(candidateName in voteTotals)) return 0;
 
-        const totalVotes = Object.values(voteTotals).reduce(
-            (sum, votes) => sum + votes,
-            0,
-        );
+        const totalVotes = this.getTotalVotesForContest(contest);
+
         return totalVotes > 0
             ? (voteTotals[candidateName] / totalVotes) * 100
             : 0;
@@ -258,6 +275,32 @@ class NCSBE {
             contestData.candidates.find((c) => c.candidate == winnerName) ||
             null
         );
+    }
+
+    /**
+     * Finds the contest with the smallest margin between the top two candidates.
+     * @returns {ContestData | null} The closest race contest data, or null if no data is available.
+     */
+    getClosestRace(): ContestData | null {
+        if (!this.dataSet) return null;
+
+        let closestContest: ContestData | null = null;
+        let smallestMargin = Infinity;
+
+        for (const contest of this.dataSet) {
+            const voteTotals = this.getContestVoteTotals(contest.contestName);
+            const sortedVotes = Object.values(voteTotals).sort((a, b) => b - a);
+
+            if (sortedVotes.length >= 2) {
+                const margin = sortedVotes[0] - sortedVotes[1];
+                if (margin < smallestMargin) {
+                    smallestMargin = margin;
+                    closestContest = contest;
+                }
+            }
+        }
+
+        return closestContest;
     }
 
     /**
@@ -301,6 +344,29 @@ class NCSBE {
         if (!this.dataSet) return [];
         return this.dataSet.filter((contest) =>
             contest.candidates.some((c) => c.candidate === candidateName),
+        );
+    }
+
+    /**
+     * Checks whether a given contest exists in the dataset.
+     * @param {string} contest - The contest's name.
+     * @returns {boolean} True if the contest exists, false otherwise.
+     */
+    hasContest(contest: string): boolean {
+        return this.dataSet
+            ? this.dataSet.some((c) => c.contestName === contest)
+            : false;
+    }
+
+    /**
+     * Checks whether a given candidate exists in the dataset.
+     * @param {string} candidate - The candidate's name.
+     * @returns {boolean} True if the candidate exists, false otherwise.
+     */
+    hasCandidate(candidate: string): boolean {
+        if (!this.dataSet) return false;
+        return this.dataSet.some((contest) =>
+            contest.candidates.some((c) => c.candidate === candidate),
         );
     }
 }

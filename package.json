@@ -17,6 +17,8 @@
     "start": "node dist/index.js",
     "dev": "rollup --config --watch",
     "test": "jest",
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --selectProjects integration",  
     "test-publish": "node tests/test-publish.js",
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"./**/*.{ts,js,json,md}\"",

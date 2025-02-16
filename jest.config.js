@@ -1,5 +1,18 @@
 export default {
     preset: 'ts-jest',
     testEnvironment: 'node',
-    setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+    projects: [
+        {
+            displayName: 'unit',
+            testMatch: ['<rootDir>/tests/unit/**/*.test.ts'],
+            setupFilesAfterEnv: ['<rootDir>/tests/setup-mock.ts'],
+            transform: { '^.+\\.ts$': 'ts-jest' },
+        },
+        {
+            displayName: 'integration',
+            testMatch: ['<rootDir>/tests/integration/**/*.test.ts'],
+            setupFilesAfterEnv: ['<rootDir>/tests/setup-real.ts'],
+            transform: { '^.+\\.ts$': 'ts-jest' },
+        },
+    ],
 };

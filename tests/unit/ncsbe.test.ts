@@ -1,7 +1,7 @@
-import { NCSBE } from '../lib/ncsbe';
-import { getNCSBEInstance } from './setup';
+import { NCSBE } from '../../lib/ncsbe';
+import { getNCSBEInstance } from '../setup-mock';
 
-describe('NCSBE - Initalization', () => {
+describe('NCSBE - Initalization with mock data', () => {
     let ncsbe: NCSBE;
 
     beforeAll(async () => {

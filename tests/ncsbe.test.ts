@@ -1,13 +1,15 @@
 import { NCSBE } from '../lib/ncsbe';
+import { getNCSBEInstance } from './setup';
 
-jest.mock('../lib/collector');
-
-describe('NCSBE', () => {
+describe('NCSBE - Initalization', () => {
     let ncsbe: NCSBE;
 
-    beforeEach(async () => {
-        ncsbe = new NCSBE('2024-11-05');
-        await ncsbe.initialize();
+    beforeAll(async () => {
+        ncsbe = getNCSBEInstance();
+    });
+
+    test('should initialize correctly', () => {
+        expect(ncsbe.getDataset()).not.toBeNull();
     });
 
     test('should list all contests', () => {

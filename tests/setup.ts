@@ -7,11 +7,12 @@ jest.mock('../lib/collector', () => ({
     })),
 }));
 
-/* 
-    Use a global instance of NCSBE. This is better because dataset is read-only,
-    so tests won't interfere with each other and we don't need to pay the cost
-    of reinitialization for each suite or test. 
-*/
+/*
+ * Global NCSBE instance for testing.
+ *
+ * Since the dataset is read-only, test cases won't interfere with each other.
+ * This also avoids the overhead of reinitializing the instance for each test suite.
+ */
 let ncsbeInstance: NCSBE;
 
 beforeAll(async () => {

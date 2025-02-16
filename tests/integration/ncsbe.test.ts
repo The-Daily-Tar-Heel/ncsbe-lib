@@ -4,7 +4,7 @@ import { getNCSBEInstance } from '../setup-real';
 describe('NCSBE - Initalization with real Collector data', () => {
     let ncsbe: NCSBE;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         ncsbe = getNCSBEInstance();
     });
 

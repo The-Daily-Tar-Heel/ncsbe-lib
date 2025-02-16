@@ -4,7 +4,7 @@ import { getNCSBEInstance } from '../setup-mock';
 describe('NCSBE - Initalization with mock data', () => {
     let ncsbe: NCSBE;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         ncsbe = getNCSBEInstance();
     });
 

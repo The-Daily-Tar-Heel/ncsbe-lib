@@ -19,7 +19,7 @@
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",  
-    "test-publish": "node tests/test-publish.js",
+    "test:publish": "node tests/publish-test.mjs",
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"./**/*.{ts,js,json,md}\"",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",

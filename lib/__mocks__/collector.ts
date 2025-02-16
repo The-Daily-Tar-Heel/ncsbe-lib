@@ -20,6 +20,11 @@ export const mockElectionData = [
                                 party: 'REP',
                                 votes: 100000,
                             },
+                            {
+                                candidate: 'Alex',
+                                party: 'DEM',
+                                votes: 1000,
+                            },
                         ],
                     },
                 ],
@@ -35,6 +40,11 @@ export const mockElectionData = [
                 candidate: 'Mark',
                 party: 'REP',
                 votes: 100000,
+            },
+            {
+                candidate: 'Alex',
+                party: 'DEM',
+                votes: 1000,
             },
         ],
     },

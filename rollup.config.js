@@ -23,6 +23,7 @@ export default {
         json(),
         typescript({
             tsconfig: './tsconfig.json',
+            exclude: ['tests/**', 'lib/__mocks__/**'],
         }),
     ],
     external: ['tslib'],

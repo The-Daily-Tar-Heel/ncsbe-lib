@@ -1,3 +1,13 @@
+[![License][license-image]][license-url]
+[![npm](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
+[![npm version][npm-image]][npm-url]
+
+[npm-url]: https://www.npmjs.com/package/ncsbe-lib
+[npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg
+
+[license-url]: https://opensource.org/licenses/MIT
+[license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
+
 # NCSBE Election Data Library
 
 NCSBE Lib is a JavaScript library created by the Daily Tar Heel engineering team for working with North Carolina State Board of Elections (NCSBE) historical election data. The NCSBE provides live election results by updating a TSV file every five minutes, accessible via periodic GET requests. This library streamlines the process of fetching, extracting, and parsing election data, turning it into a more useful and easy to work with structure.

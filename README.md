@@ -1,6 +1,12 @@
 [![License][license-image]][license-url]
-[![npm](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
 [![npm version][npm-image]][npm-url]
+[![npm downloads](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
+
+#### 📊 Coverage
+![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-statements.svg)
+![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-functions.svg)
+![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-lines.svg)
+![Branches](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-branches.svg)
 
 [npm-url]: https://www.npmjs.com/package/ncsbe-lib
 [npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg

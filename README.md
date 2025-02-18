@@ -3,9 +3,9 @@
 [![npm downloads](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
 
 #### 📊 Coverage
-![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-statements.svg)
-![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-functions.svg)
 ![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-lines.svg)
+![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-functions.svg)
+![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-statements.svg)
 ![Branches](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-branches.svg)
 
 [npm-url]: https://www.npmjs.com/package/ncsbe-lib

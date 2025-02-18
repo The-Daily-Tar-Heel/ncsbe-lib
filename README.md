@@ -4,7 +4,6 @@
 
 [npm-url]: https://www.npmjs.com/package/ncsbe-lib
 [npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg
-
 [license-url]: https://opensource.org/licenses/MIT
 [license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
 

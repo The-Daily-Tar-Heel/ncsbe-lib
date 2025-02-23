@@ -6,3 +6,4 @@ print(collector._url)
 print(collector._normalize_contest_name("US PRESIDENT"))
 
 data = collector._fetchData(collector._url)
+print(collector._extract_tsv_files(data))

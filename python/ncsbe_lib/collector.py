@@ -60,9 +60,15 @@ class Collector:
 
         return None
 
-    def _extract_tsv_files(self, zip_data: BytesIO) -> str:
+    def _extract_tsv_files(self, zip_buffer: BytesIO) -> str:
         """Extracts TSV files from the provided ZIP data and returns the extracted content as a string."""
-        pass
+        with zipfile.ZipFile(zip_buffer, 'r') as zf:
+            tsv_files = [f for f in zf.namelist() if f.endswith('.txt')]
+
+            if not tsv_files:
+                raise ValueError(f'No TSV files found in ZIP.')
+
+            return "\n".join(zf.open(f).read().decode('utf-8') for f in tsv_files)
 
     def _transform_row(self, row: dict[str, str]) -> ParsedRow:
         """Transforms a row of the TSV file into a structured dictionary."""

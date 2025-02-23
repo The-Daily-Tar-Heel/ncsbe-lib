@@ -2,6 +2,7 @@ import requests
 import zipfile
 import csv
 import re
+import logging
 from io import BytesIO
 from .types import CandidateData, ContestData, CountyData, ParsedRow
 
@@ -41,11 +42,23 @@ class Collector:
         """Fetches a ZIP file from the provided URL, returning its raw binary data as bytes."""
         try:
             print(url)
-            response = requests.get(url)
+            response = requests.get(url, timeout=20)
             response.raise_for_status()
+
+            content_type = response.headers.get("Content-Type", "")
+            if content_type != "application/x-zip-compressed":
+                logging.warning(f"Unexpected content type: {content_type}")
+                return None
+
+            logging.info("Data fetched successfully.")
             return BytesIO(response.content)
-        except Exception as e:
-            print(f"Error: {e}")
+        
+        except requests.exceptions.Timeout:
+            logging.error(f"Request timed out while fetching {url}")
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Request failed: {e}")
+
+        return None
 
     def _extract_tsv_files(self, zip_data: BytesIO) -> str:
         """Extracts TSV files from the provided ZIP data and returns the extracted content as a string."""

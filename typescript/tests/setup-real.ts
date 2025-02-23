@@ -16,3 +16,5 @@ beforeAll(async () => {
 export function getNCSBEInstance() {
     return ncsbeInstance;
 }
+
+// This is for testing husky

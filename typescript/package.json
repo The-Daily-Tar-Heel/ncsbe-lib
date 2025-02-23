@@ -25,7 +25,7 @@
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"./**/*.{ts,js,json,md}\"",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",
-    "prepare": "husky"
+    "prepare": "HUSKY_GIT_DIR=../.git husky install"
   },
   "keywords": [
     "elections",

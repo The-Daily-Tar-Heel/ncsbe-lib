@@ -18,10 +18,10 @@ class Collector:
     - Formats the parsed data into a hierarchical structure for easy analysis.
 
     Example usage:
-    ```py
-    collector: Collector = Collector("https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip"); // 2024 election
-    results = collector.collect();
-    print(results);
+    ```python
+    collector = Collector("https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip") # 2024 election
+    results = collector.collect()
+    print(results)
     ```
     """
     
@@ -30,6 +30,7 @@ class Collector:
 
     def _normalize_contest_name(self, contest_name: str) -> str:
         return re.sub(r'[^a-zA-Z0-9]+', '_', contest_name.strip())
+    
     
     def collect(self) -> list[ContestData]:
         """
@@ -43,6 +44,7 @@ class Collector:
             return self._format(parsed_data)
         except Exception as e:
             logging.error(f"Error: {e}")
+
 
     def _fetchData(self, url: str) -> BytesIO:
         """Fetches a ZIP file from the provided URL, returning its raw binary data as bytes."""
@@ -65,6 +67,7 @@ class Collector:
             logging.error(f"Request failed: {e}")
 
         return None
+    
 
     def _extract_tsv_files(self, zip_buffer: BytesIO) -> str:
         """Extracts TSV files from the provided ZIP data and returns the extracted content as a string."""
@@ -75,6 +78,7 @@ class Collector:
                 raise ValueError(f'No TSV files found in ZIP.')
 
             return "\n".join(zf.open(f).read().decode('utf-8') for f in tsv_files)
+        
 
     def _transform_row(self, row: dict[str, str]) -> ParsedRow:
         """Transforms a row of the TSV file into a structured dictionary."""
@@ -95,6 +99,7 @@ class Collector:
             total_votes = int(row['Total Votes']),
             real_precinct = row['Real Precinct'] == 'Y'
         )
+    
 
     def _parse_tsv_data(self, tsv_data: str) -> list[ParsedRow]:
         """Parses TSV data into a list of structured election result dictionaries."""
@@ -106,6 +111,7 @@ class Collector:
             rows.append(parsed_row)
 
         return rows
+    
 
     def _format(self, parsed_data: list[ParsedRow]) -> list[ContestData]:
         """Formats parsed election data into a structured hierarchy."""

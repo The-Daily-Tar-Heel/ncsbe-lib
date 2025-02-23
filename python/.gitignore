@@ -2,3 +2,5 @@
 dist
 ncsbe_lib.egg-info
 build
+.tox
+__pycache__

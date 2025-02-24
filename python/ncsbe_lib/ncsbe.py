@@ -29,7 +29,7 @@ class NCSBE:
         """
         self._election_date = election_date
         self._url = self._make_base_url(election_date)
-        self._dataset = Optional[list]
+        self._dataset = Optional[list[ContestData]]
 
     @staticmethod
     def _make_base_url(date: str) -> str:
@@ -52,7 +52,14 @@ class NCSBE:
         self._dataset = self.collect()
 
 
-    def get_dataset(self) -> Optional[list]:
+    def _get_contest_data(self, contest: str) -> Optional[ContestData]:
+        for c in self._dataset:
+            if c.contest_name == contest:
+                return c
+        return None
+
+
+    def get_dataset(self) -> Optional[list[ContestData]]:
         """Retrieves the entire election dataset."""
         return self._dataset
 
@@ -65,37 +72,73 @@ class NCSBE:
 
     def list_counties(self, contest: str) -> list[str]:
         """Lists all counties where voting took place for a specific contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return []
+
+        return list({ county for county in contest_data.counties })
 
 
     def list_precincts(self, contest: str, county: str) -> list[str]:
         """Lists all precincts in a given county for a specific contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return []
 
+        for c in contest_data.counties:
+            if c.county == county:
+                return list({ precinct.precinct for precinct in c.precincts })
+                
+        return []
 
     def list_candidates(self, contest: str) -> list[str]:
         """Retrieves a list of candidates in a given contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return []
+
+        return list({ candidate.candidate for candidate in contest_data.candidates })
 
 
-    def get_contest(self, contest: str):
+    def get_contest(self, contest: str) -> Optional[ContestData]:
         """Retrieves contest data for a specific contest name."""
-        pass
+        return self._get_contest_data(contest)
 
 
-    def get_candidate_info(self, contest: str, candidate_name: str):
+    def get_candidate_info(self, contest: str, candidate_name: str) -> Optional[CandidateData]:
         """Retrieves detailed information about a specific candidate in a contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return None
+
+        for candidate in contest_data.candidates:
+            if candidate.candidate == candidate_name:
+                return candidate
+
+        return None
 
 
-    def get_county_results(self, contest: str, county: str):
+    def get_county_results(self, contest: str, county: str) -> Optional[CountyData]:
         """Retrieves results for all precincts in a county for a given contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return None
+
+        for c in contest_data.counties:
+            if c.county == county:
+                return c
+            
+        return None
 
 
-    def get_all_candidate_results(self, candidate_name: str):
+    def get_all_candidate_results(self, candidate_name: str) -> list[CandidateData]:
         """Retrieves all election results for a specific candidate across all contests."""
-        pass
+        dataset = self.get_dataset()
+        if not dataset: return []
+
+        res = []
+        for contest in dataset:
+            if any(candidate.candidate == candidate_name for candidate in contest.candidates):
+                candidate_info = self.get_candidate_info(contest.contest_name, candidate_name)
+                if candidate_info:
+                    res.append(candidate_info)
+            
+        return res
 
 
     def get_candidate_vote_total(self, contest: str, candidate_name: str) -> int:

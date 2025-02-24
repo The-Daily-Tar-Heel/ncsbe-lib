@@ -147,7 +147,7 @@ class Collector:
                 data[contest_name]['candidates'][choice] = {
                     'candidate': choice,
                     'party': choice_party,
-                    'votes': total_votes
+                    'votes': 0
                 }
             data[contest_name]['candidates'][choice]['votes'] += total_votes
 

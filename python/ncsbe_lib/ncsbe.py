@@ -1,6 +1,7 @@
 from .collector import Collector
 from .types import CandidateData, PrecinctData, CountyData, ContestData
 from typing import Optional
+from collections import defaultdict
 
 class NCSBE:
     """
@@ -143,59 +144,130 @@ class NCSBE:
 
     def get_candidate_vote_total(self, contest: str, candidate_name: str) -> int:
         """Retrieves the total vote count for a specific candidate in a contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return 0
+
+        for candidate in contest_data.candidates:
+            if candidate.candidate == candidate_name:
+                return candidate.votes
+
+        return 0
 
 
-    def get_contest_vote_totals(self, contest: str) -> dict:
+    def get_contest_vote_totals(self, contest: str) -> dict[str, int]:
         """Retrieves a dictionary mapping candidates to their total votes in a contest."""
-        pass
-    
+        contest_data = self._get_contest_data(contest)
+        if not contest_data: return {}
+        
+        res: dict[str, int] = {}
+        for candidate in set(contest_data.candidates):
+            res[candidate.candidate] = self.get_candidate_vote_total(contest, candidate.candidate)
+        
+        return res
+
 
     def get_total_votes_for_contest(self, contest: str) -> int:
         """Retrieves the total number of votes for a given contest."""
-        pass
+        vote_totals = self.get_contest_vote_totals(contest)
+        return sum(vote_totals.values())
 
 
     def get_candidate_vote_percentage(self, contest: str, candidate_name: str) -> float:
         """Retrieve a candidate's percentage of total votes in a contest."""
-        pass
+        vote_totals = self.get_contest_vote_totals(contest)
+        if candidate_name not in vote_totals: return 0
+
+        total_votes = self.get_total_votes_for_contest(contest)
+
+        return (vote_totals[candidate_name] / total_votes) * 100 if total_votes > 0 else 0
 
 
-    def get_contest_winner(self, contest: str):
+    def get_contest_winner(self, contest: str) -> Optional[CandidateData]:
         """Retrieves the data of the candidate who currently has the most votes in a given contest."""
-        pass
+        contest_data = self._get_contest_data(contest)
+        if not contest_data or len(contest_data.candidates) == 0: return None
+
+        vote_totals = self.get_contest_vote_totals(contest)
+        if len(vote_totals.items()) == 0: return None
+
+        winnerName = sorted(vote_totals.items(), key=lambda item: item[1], reverse=True)[0][0]
+
+        return self.get_candidate_info(contest, winnerName) if winnerName else None
 
 
-    def get_closest_race(self):
+    def get_closest_race(self) -> Optional[ContestData]:
         """Finds the contest with the smallest margin between the top two candidates."""
-        pass
+        dataset = self.get_dataset()
+        if not dataset: return None
+
+        closest_contest: ContestData = None
+        smallest_margin = float('inf')
+
+        for contest in dataset:
+            vote_totals = self.get_contest_vote_totals(contest.contest_name)
+            sorted_totals = sorted(vote_totals.items(), key=lambda item: item[1], reverse=True)
+
+            if len(sorted_totals) >= 2:
+                margin = sorted_totals[0][1] - sorted_totals[1][1]
+                if margin < smallest_margin:
+                    smallest_margin = margin
+                    closest_contest = contest
+
+        return closest_contest
 
 
-    def get_candidates(self, contest: str):
+    def get_candidates(self, contest: str) -> list[CandidateData]:
         """Retrieves all candidates in a given contest."""
-        pass
+        contest_data = self.get_contest(contest)
+        return contest_data if contest_data else []
 
 
-    def get_counties(self, contest: str):
+    def get_counties(self, contest: str) -> list[CountyData]:
         """Retrieves all counties in a given contest."""
-        pass
+        contest_data = self.get_contest(contest)
+        return contest_data.counties if contest_data else []
 
 
-    def get_precincts(self, contest: str):
+    def get_precincts(self, contest: str) -> list[PrecinctData]:
         """Retrieves all precincts in a given contest."""
-        pass
+        contest_data = self.get_contest(contest)
+        if not contest_data: return []
+
+        precincts = []
+        for county in contest_data.counties:
+            precincts.extend(county.precincts)
+
+        return precincts
 
 
-    def get_contests_by_candidate(self, candidate_name: str):
+    def get_contests_by_candidate(self, candidate_name: str) -> list[ContestData]:
         """Retrieves all contests that a given candidate is a part of."""
-        pass
+        dataset = self.get_dataset()
+        if not dataset: return []
+
+        contest_data = []
+        for contest in dataset:
+            if any(candidate.candidate == candidate_name for candidate in contest.candidates):
+                contest_data.append(contest)
+        
+        return contest_data
 
 
     def has_contest(self, contest: str) -> bool:
         """Checks whether a given contest exists in the dataset."""
-        pass
+        dataset = self.get_dataset()
+        if not dataset: return False
+
+        return any(c.contest_name == contest for c in dataset)
 
 
     def has_candidate(self, candidate_name: str) -> bool:
         """Checks whether a given candidate exists in the dataset."""
-        pass
+        dataset = self.get_dataset()
+        if not dataset: return False
+
+        for contest in dataset:
+            if any(candidate.candidate == candidate_name for candidate in contest.candidates):
+                return True
+        
+        return False

@@ -43,28 +43,28 @@ Users can utilize this library in one of two ways:
 Ensure you have TypeScript installed in your project. You can install the node module using:
 
 ```sh
-npm install ncsbe-lib
+pip install ncsbe-lib
 ```
 
 ## Usage
 
 ### Importing and Initializing
 
-```ts
-import { NCSBE } from 'ncsbe-lib';
+```py
+from ncsbe_lib.ncsbe import NCSBE
 
-const ncsbe = new NCSBE('2024-11-05');
-await ncsbe.initialize();
+ncsbe = NCSBE('2024-11-05')
+ncsbe.initialize()
 ```
 
 ### Refresh Data
 
 ```ts
 // Replace dataSet with the entirety of the newly fetched TSV file.
-await ncsbe.refresh();
+ncsbe.refresh();
 ```
 
-"Refreshing" will replace the **entire** `dataSet`. The NCSBE continuously re-uploads the ZIP file as a full snapshot rather than an incremental update. Because of this, **you** will need to detect changes in the data to avoid unnecessary updates if storing this information in a database.
+"Refreshing" will replace the **entire** `dataset`. The NCSBE continuously re-uploads the ZIP file as a full snapshot rather than an incremental update. Because of this, **you** will need to detect changes in the data to avoid unnecessary updates if storing this information in a database.
 
 We recommend **hashing** each record and only updating entries when their hash has changed. This ensures that unchanged records are not unnecessarily reprocessed, reducing database load and preventing redundant updates.
 
@@ -79,21 +79,19 @@ await ncsbe.refresh();
 const allData = ncsbe.dataSet;
 
 for (const contest of allData) {
-    // Compute the hash for the current contest data. We used Node's built-in crypto module.
-    const currentHash = hashService.computeHash(contest);
+  // Compute the hash for the current contest data. We used Node's built-in crypto module.
+  const currentHash = hashService.computeHash(contest);
 
-    // Get the previous hash from our database, stored in its own collection, keyed by name of the contest.
-    const previousHash = await hashService.getPreviousHash(contestName);
+  // Get the previous hash from our database, stored in its own collection, keyed by name of the contest.
+  const previousHash = await hashService.getPreviousHash(contestName);
 
-    // Did anything change? If not, skip this contest.
-    if (currentHash === previousHash) {
-        logger.info(
-            `No changes detected for contest '${contest.contestName}'.`,
-        );
-        continue;
-    }
+  // Did anything change? If not, skip this contest.
+  if (currentHash === previousHash) {
+    logger.info(`No changes detected for contest '${contest.contestName}'.`);
+    continue;
+  }
 
-    //...rest of the function handling updating database
+  //...rest of the function handling updating database
 }
 ```
 

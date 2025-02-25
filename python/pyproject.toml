@@ -1,6 +1,6 @@
 [project]
 name = "ncsbe-lib"
-version = "1.2.1"
+version = "1.2.2"
 description = "Python package for working with North Carolina State Board of Elections (NCSBE) historical election data"
 authors = [
     {name = "Gregory Glasby",email = "trace.glasby@gmail.com"},

@@ -33,7 +33,10 @@ class NCSBE:
 
     @staticmethod
     def _make_base_url(date: str) -> str:
-        return f'https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/{date.replace('-', '_')}/results_pct_{date.replace('-', '')}.zip'
+        formatted_date = date.replace('-', '_')
+        short_date = date.replace('-', '')
+
+        return f'https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/{formatted_date}/results_pct_{short_date}.zip'
     
 
     def collect(self) -> list:

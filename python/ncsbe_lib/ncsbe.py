@@ -75,7 +75,7 @@ class NCSBE:
         contest_data = self._get_contest_data(contest)
         if not contest_data: return []
 
-        return list({ county for county in contest_data.counties })
+        return list({ county.county for county in contest_data.counties })
 
 
     def list_precincts(self, contest: str, county: str) -> list[str]:
@@ -218,7 +218,7 @@ class NCSBE:
     def get_candidates(self, contest: str) -> list[CandidateData]:
         """Retrieves all candidates in a given contest."""
         contest_data = self.get_contest(contest)
-        return contest_data if contest_data else []
+        return contest_data.candidates if contest_data else []
 
 
     def get_counties(self, contest: str) -> list[CountyData]:

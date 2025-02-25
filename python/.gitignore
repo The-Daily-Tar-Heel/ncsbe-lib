@@ -4,3 +4,5 @@ ncsbe_lib.egg-info
 build
 .tox
 __pycache__
+.coverage
+.pytest_cache

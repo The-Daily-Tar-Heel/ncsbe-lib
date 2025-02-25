@@ -24,4 +24,6 @@ build-backend = "poetry.core.masonry.api"
 pytest = "^8.3.4"
 tox = "^4.24.1"
 twine = "^6.1.0"
+coverage = "^7.6.12"
+pytest-cov = "^6.0.0"
 

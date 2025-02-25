@@ -32,7 +32,7 @@ class PrecinctData:
     precinct: str
 
     # List of candidates who received votes in this precinct.
-    candidates: list[CandidateData]
+    candidates: tuple[CandidateData, ...]
 
     # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
     def to_json(self) -> dict:
@@ -50,7 +50,7 @@ class CountyData:
     county: str
 
     # List of precincts within the county.
-    precincts: list[PrecinctData]
+    precincts: tuple[PrecinctData, ...]
 
     # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
     def to_json(self) -> dict:
@@ -68,10 +68,10 @@ class ContestData:
     contest_name: str
 
     # List of counties where voting took place for this contest.
-    counties: list[CountyData]
+    counties: tuple[CountyData, ...]
 
     # List of candidates that have received votes for the contest.
-    candidates: list[CandidateData]
+    candidates: tuple[CandidateData, ...]
 
     # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
     def to_json(self) -> dict:

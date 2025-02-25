@@ -15,6 +15,14 @@ class CandidateData:
     # Number of votes received.
     votes: int
 
+    # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
+    def to_json(self) -> dict:
+        return {
+            "candidate": self.candidate,
+            "party": self.party,
+            "votes": self.votes
+        }
+
 @dataclass(frozen=True)
 class PrecinctData:
     """
@@ -26,6 +34,13 @@ class PrecinctData:
     # List of candidates who received votes in this precinct.
     candidates: list[CandidateData]
 
+    # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
+    def to_json(self) -> dict:
+        return {
+            "precinct": self.precinct,
+            "candidates": [candidate.to_json() for candidate in self.candidates]
+        }
+
 @dataclass(frozen=True)
 class CountyData:
     """
@@ -36,6 +51,13 @@ class CountyData:
 
     # List of precincts within the county.
     precincts: list[PrecinctData]
+
+    # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
+    def to_json(self) -> dict:
+        return {
+            "county": self.county,
+            "precincts": [precinct.to_json() for precinct in self.precincts]
+        }
 
 @dataclass(frozen=True)
 class ContestData:
@@ -50,6 +72,14 @@ class ContestData:
 
     # List of candidates that have received votes for the contest.
     candidates: list[CandidateData]
+
+    # Converts the dataclass into a JSON-compatible dictionary, including nested objects.
+    def to_json(self) -> dict:
+        return {
+            "contest_name": self.contest_name,
+            "counties": [county.to_json() for county in self.counties],
+            "candidates": [candidate.to_json() for candidate in self.candidates]
+        }
 
 @dataclass(frozen=True)
 class ParsedRow:

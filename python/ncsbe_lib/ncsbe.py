@@ -1,7 +1,6 @@
 from .collector import Collector
 from .types import CandidateData, PrecinctData, CountyData, ContestData
 from typing import Optional
-from collections import defaultdict
 
 class NCSBE:
     """

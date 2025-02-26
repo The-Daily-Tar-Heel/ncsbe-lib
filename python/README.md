@@ -1,18 +1,10 @@
 [![License][license-image]][license-url]
-[![npm version][npm-image]][npm-url]
-[![npm downloads](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ncsbe-lib)][pypi-url]
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/ncsbe-lib)
 
 #### 📊 Coverage
 
-![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-lines.svg)
-![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-functions.svg)
-![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-statements.svg)
-![Branches](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-branches.svg)
-
-[npm-url]: https://www.npmjs.com/package/ncsbe-lib
-[npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg
-[license-url]: https://opensource.org/licenses/MIT
-[license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
+[pypi-url]: https://pypi.org/project/ncsbe-lib/
 
 # NCSBE Election Data Library
 

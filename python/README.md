@@ -1,10 +1,14 @@
 [![License][license-image]][license-url]
+[![PyPI - Version](https://img.shields.io/pypi/v/ncsbe-lib)][pypi-url]
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ncsbe-lib)][pypi-url]
-![PyPI - Wheel](https://img.shields.io/pypi/wheel/ncsbe-lib)
+![PyPI - Format](https://img.shields.io/pypi/format/ncsbe-lib)
 
 #### 📊 Coverage
 
 [pypi-url]: https://pypi.org/project/ncsbe-lib/
+[license-url]: https://opensource.org/licenses/MIT
+[license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
+
 
 # NCSBE Election Data Library
 

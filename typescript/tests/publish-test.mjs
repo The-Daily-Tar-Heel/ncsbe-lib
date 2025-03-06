@@ -7,19 +7,42 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const TEST_DIR = path.join(__dirname, 'test-package');
+console.log(TEST_DIR);
 
 try {
-    // Run 'npm run build' in root directory of project
+    // Run 'npm run build' in the *parent* directory (i.e., the package root)
     console.log('🛠️  Building the package...');
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('npm run build', {
+        stdio: 'inherit',
+        cwd: path.join(__dirname, '..'),
+    });
 
-    // Run `npm pack` and extract the resulting file's name
+    // Run `npm pack` in the parent folder so the .tgz file lands there
     console.log('📦 Packing the package...');
-    const packageFile = execSync('npm pack', { encoding: 'utf-8' })
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line.endsWith('.tgz'))[0];
-    console.log(`✅ Package created: ${packageFile}`);
+    const packOutput = execSync(
+        'HUSKY_SKIP_HOOKS=1 npm pack --ignore-scripts',
+        {
+            encoding: 'utf-8',
+            cwd: path.join(__dirname, '..'),
+        },
+    );
+    console.log('npm pack output:', packOutput);
+
+    // Find the line that ends with ".tgz"
+    const tgzLine = packOutput
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .find((line) => line.endsWith('.tgz'));
+
+    if (!tgzLine) {
+        throw new Error(
+            `Could not find .tgz file in npm pack output:\n${packOutput}`,
+        );
+    }
+
+    // The .tgz is in the parent folder, so join(__dirname, '..', tgzLine)
+    const tarballPath = path.join(__dirname, '..', tgzLine);
+    console.log(`✅ Package created: ${tarballPath}`);
 
     // Create a new folder called 'test-package' to store new Node.js folder and test file.
     console.log(`📂 Creating test directory: ${TEST_DIR}...`);
@@ -41,7 +64,7 @@ try {
 
     // Install the local package
     console.log('📥 Installing packed package...');
-    execSync(`npm install ../../${packageFile}`, {
+    execSync(`npm install "${tarballPath}"`, {
         cwd: TEST_DIR,
         stdio: 'inherit',
     });
@@ -178,7 +201,7 @@ try {
     // Remove all files related to this test
     console.log('🧹 Cleaning up...');
     fs.rmSync(TEST_DIR, { recursive: true });
-    fs.unlinkSync(packageFile);
+    fs.unlinkSync(tarballPath);
 
     console.log('✅ Test completed successfully!');
 } catch (error) {

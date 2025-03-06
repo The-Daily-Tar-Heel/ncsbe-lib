@@ -1,6 +1,6 @@
 {
   "name": "ncsbe-lib",
-  "version": "1.2.0",
+  "version": "1.3.1",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,7 @@
     "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
     "format:check": "prettier --check \"./**/*.{ts,js,json,md}\"",
     "configure-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\"",
-    "prepare": "husky"
+    "prepare": "HUSKY_GIT_DIR=../.git husky install"
   },
   "keywords": [
     "elections",
@@ -95,7 +95,6 @@
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "jest-coverage-badges": "^1.1.2",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.0",
     "rollup": "^4.34.6",

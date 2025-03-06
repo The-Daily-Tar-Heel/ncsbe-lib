@@ -1,8 +1,7 @@
 [![License][license-image]][license-url]
+[![PyPI - Version](https://img.shields.io/pypi/v/ncsbe-lib)][pypi-url]
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ncsbe-lib)][pypi-url]
-![PyPI - Wheel](https://img.shields.io/pypi/wheel/ncsbe-lib)
-
-#### 📊 Coverage
+![PyPI - Format](https://img.shields.io/pypi/format/ncsbe-lib)
 
 [pypi-url]: https://pypi.org/project/ncsbe-lib/
 [license-url]: https://opensource.org/licenses/MIT
@@ -10,7 +9,7 @@
 
 # NCSBE Election Data Library
 
-NCSBE Lib is a JavaScript library created by the Daily Tar Heel engineering team for working with North Carolina State Board of Elections (NCSBE) historical election data. The NCSBE provides live election results by updating a TSV file every five minutes, accessible via periodic GET requests. This library streamlines the process of fetching, extracting, and parsing election data, turning it into a more useful and easy to work with structure.
+NCSBE Lib is a Python library created by the Daily Tar Heel engineering team for working with North Carolina State Board of Elections (NCSBE) historical election data. The NCSBE provides live election results by updating a TSV file every five minutes, accessible via periodic GET requests. This library streamlines the process of fetching, extracting, and parsing election data, turning it into a more useful and easy to work with structure.
 
 ## How It Works
 
@@ -34,8 +33,6 @@ Users can utilize this library in one of two ways:
 
 ## Installation
 
-Ensure you have TypeScript installed in your project. You can install the node module using:
-
 ```sh
 pip install ncsbe-lib
 ```
@@ -53,9 +50,9 @@ ncsbe.initialize()
 
 ### Refresh Data
 
-```ts
+```py
 // Replace dataSet with the entirety of the newly fetched TSV file.
-ncsbe.refresh();
+ncsbe.refresh()
 ```
 
 "Refreshing" will replace the **entire** `dataset`. The NCSBE continuously re-uploads the ZIP file as a full snapshot rather than an incremental update. Because of this, **you** will need to detect changes in the data to avoid unnecessary updates if storing this information in a database.

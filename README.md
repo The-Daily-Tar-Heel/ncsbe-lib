@@ -1,6 +1,18 @@
+# NCSBE Election Data Library
+
 [![License][license-image]][license-url]
+![NPM Last Update](https://img.shields.io/npm/last-update/ncsbe-lib)
+
+#### NPM
 [![npm version][npm-image]][npm-url]
+![NPM Type Definitions](https://img.shields.io/npm/types/ncsbe-lib)
+![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/ncsbe-lib)
 [![npm downloads](https://img.shields.io/npm/dw/ncsbe-lib.svg)][npm-url]
+
+#### PyPI
+[![PyPI - Version](https://img.shields.io/pypi/v/ncsbe-lib)][pypi-url]
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ncsbe-lib)][pypi-url]
+![PyPI - Format](https://img.shields.io/pypi/format/ncsbe-lib)
 
 #### 📊 Coverage
 ![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-lines.svg)
@@ -10,12 +22,14 @@
 
 [npm-url]: https://www.npmjs.com/package/ncsbe-lib
 [npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg
+[pypi-url]: https://pypi.org/project/ncsbe-lib/
 [license-url]: https://opensource.org/licenses/MIT
 [license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
 
-# NCSBE Election Data Library
+## What it is
 
 NCSBE Lib is a JavaScript library created by the Daily Tar Heel engineering team for working with North Carolina State Board of Elections (NCSBE) historical election data. The NCSBE provides live election results by updating a TSV file every five minutes, accessible via periodic GET requests. This library streamlines the process of fetching, extracting, and parsing election data, turning it into a more useful and easy to work with structure.
+
 
 ## How It Works
 
@@ -39,15 +53,23 @@ Users can utilize this library in one of two ways:
 
 ## Installation
 
-Ensure you have TypeScript installed in your project. You can install the node module using:
+### JavaScript (Node)
 
 ```sh
 npm install ncsbe-lib
 ```
 
+### Python
+
+```sh
+pip install ncsbe-lib
+```
+
 ## Usage
 
 ### Importing and Initializing
+
+### JavaScript (Node/TypeScript)
 
 ```ts
 import { NCSBE } from 'ncsbe-lib';
@@ -56,11 +78,30 @@ const ncsbe = new NCSBE('2024-11-05');
 await ncsbe.initialize();
 ```
 
+### Python
+
+```py
+from ncsbe_lib import NCSBE
+
+ncsbe = NCSBE('2024-11-05')
+ncsbe.initialize()
+```
+
+> Note: The Python package makes use of the `requests` library which is **synchronous** in Python. The JavaScript package makes use of `axios`, so initialization and refreshing are **async**, but all other methods are synchroonous.
+
 ### Refresh Data
+
+### JS
 
 ```ts
 // Replace dataSet with the entirety of the newly fetched TSV file.
 await ncsbe.refresh();
+```
+
+### Python
+```py
+# Replace dataSet with the entirety of the newly fetched TSV file.
+ncsbe.refresh()
 ```
 
 "Refreshing" will replace the **entire** `dataSet`. The NCSBE continuously re-uploads the ZIP file as a full snapshot rather than an incremental update. Because of this, **you** will need to detect changes in the data to avoid unnecessary updates if storing this information in a database.

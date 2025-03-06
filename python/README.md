@@ -5,6 +5,8 @@
 #### 📊 Coverage
 
 [pypi-url]: https://pypi.org/project/ncsbe-lib/
+[license-url]: https://opensource.org/licenses/MIT
+[license-image]: https://img.shields.io/npm/l/make-coverage-badge.svg
 
 # NCSBE Election Data Library
 

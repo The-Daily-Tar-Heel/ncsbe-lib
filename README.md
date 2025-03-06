@@ -15,10 +15,10 @@
 ![PyPI - Format](https://img.shields.io/pypi/format/ncsbe-lib)
 
 #### 📊 Coverage
-![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-lines.svg)
-![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-functions.svg)
-![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-statements.svg)
-![Branches](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/badges/badge-branches.svg)
+![Lines](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/typescript/badges/badge-lines.svg)
+![Functions](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/typescript/badges/badge-functions.svg)
+![Statements](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/typescript/badges/badge-statements.svg)
+![Branches](https://github.com/The-Daily-Tar-Heel/ncsbe-lib/blob/main/typescript/badges/badge-branches.svg)
 
 [npm-url]: https://www.npmjs.com/package/ncsbe-lib
 [npm-image]: https://img.shields.io/npm/v/ncsbe-lib.svg
